@@ -115,8 +115,24 @@ Below are steps on how to create a virtual host for our website
 ![Screenshot (70)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-LAMP-STACK-IN-AWS/assets/109143806/02419a47-827e-4225-9a58-34ab812ce34f)
 
 
-# STEP 5 - ENABLINg PHP ON THE WEBSITE
-1. with the default directoryindex on apache. A file name index.html will take precedence over an index.php file. enable dir/conf and change the order in which the index.php file is  listed in the directory directive
+# STEP 5 - ENABLING PHP ON THE WEBSITE
+1. with the default directoryindex on apache. A file name index.html will take precedence over an index.php file. enable dir/conf and change the order in which the index.php file is  listed in the directory directive. This will create a blank space and then we can input our valid PHP code inside the file.
+
+![Screenshot (74)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-LAMP-STACK-IN-AWS/assets/109143806/1e8bb512-1220-484e-87bb-1d509f0a22d1)
+
+![Screenshot (75)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-LAMP-STACK-IN-AWS/assets/109143806/7bbe2899-b7fd-407e-823d-b4ca5537bbee)
+
+2. Refreshed the page to confirm if our page is working perfectly well.
+
+![Screenshot (76)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-LAMP-STACK-IN-AWS/assets/109143806/b8b93316-1123-43e8-b858-d1122f2df817)
+
+3. After checking the relevant information about the PHP server, it's best practice to remove the file created as it contains sensitive information about the PHP enviroment and ubuntu server.
+
+![Screenshot (77)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-LAMP-STACK-IN-AWS/assets/109143806/4d19e59c-073e-4469-a540-1ea7370f1d94)
+
+
+
+
 
 
 
