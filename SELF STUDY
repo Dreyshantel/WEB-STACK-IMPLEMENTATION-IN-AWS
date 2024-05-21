@@ -5,7 +5,7 @@ Software devcelpment life cycle (SDLC) is a standard process followed by the sof
 3. Design Phase: The software designers would devise the system design following the SRS document, check feasibility with requirement, and all details of the design phase are added to the design document specification (DDS Document)
 4. Implementation Phase: In this phase, the developer start writing the code using the language they choose for the software development. It encapsulate the actual implementation of the software product.
 5. Testing Phase: The developed software is deployed in multiple test enviroment to check the functionality. Testing team may find error or bugs in software which would be forwarded to the developer team for debugging.
-6. Deployment Phase: The development team would set up installation link for the users, fix bugs, debugging of the regular application is done on regular basis, and regular updates with enhanced features for better performance and user experience
+6. Deployment Phase: The development team would set up installation link for the users, fix bugs, debugging of the regular application is done on regular basis, and regular updates with enhanced features for better performance and user experience.
 
 ## SOFTWARE DEVELOPMENT MODELS
 Software development models are frameworks used by software development teams to structure, plan, and control the process of developing software. These models provide a systematic approach to building software, ensuring efficiency, quality, and adherence to requirements. Here are some common software development models:
