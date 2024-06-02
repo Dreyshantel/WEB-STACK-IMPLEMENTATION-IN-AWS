@@ -23,7 +23,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    - Click on "Launch instance" and choose Ubuntu Server 20.04 LTS as the operating system
 
-   ![Screenshot (107)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (107).png)
+![Screenshot (107)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (107).png)
 
 ![Screenshot (108)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (108).png)
 
@@ -46,13 +46,13 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
    - Create a new security group or use an existing one.
    - Allow inbound traffic on port 80 (HTTP, 433 (HTTPS), 22 (SHH) from your IP address
 
-   ![Screenshot (141)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (141).png)
+ ![Screenshot (141)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (141).png)
 
 6. **Review and launch:**
 
    - Review the configuration and launch the instance.
 
-   ![Screenshot (112)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (112).png)
+ ![Screenshot (112)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (112).png)
 
 7. **Connect to the Instance**
 
@@ -64,7 +64,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `ssh -i "my_ec2-key.pem" 16.16.223.129`
 
-   ![Screenshot (114)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (114).png)
+![Screenshot (114)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (114).png)
 
 # 
 
@@ -78,7 +78,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo apt install nginx`
 
-   ![Screenshot (116)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (116).png)
+![Screenshot (116)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (116).png)
 
 
 
@@ -90,7 +90,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    if it is active and running, then nginx is successfully installed
 
-   ![Screenshot (117)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (117).png)
+![Screenshot (117)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (117).png)
 
 
 
@@ -100,7 +100,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo curl http://<public-IP-Address>:80`
 
-   ![Screenshot (118)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (118).png)
+![Screenshot (118)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (118).png)
 
    
 
@@ -109,7 +109,6 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
    `http://<public-IP-Address>:80`
 
    
-
 ![Screenshot (119)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (119).png)
 
 
@@ -124,7 +123,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    
 
-   ![Screenshot (120)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (120).png)
+![Screenshot (120)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (120).png)
 
 2. **Logging into MySQL console**
 
@@ -144,7 +143,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo mysql_secure_installation`
 
-   ![Screenshot (123)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (123).png)
+![Screenshot (123)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (123).png)
 
 ![Screenshot (124)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (124).png)
 
@@ -154,7 +153,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo mysql -p`
 
-   ![Screenshot (122)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (122).png)
+ ![Screenshot (122)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (122).png)
 
 7. **Exit the MySQL console**
 
@@ -170,9 +169,9 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    When prompted type y and press ENTER for confirmation
 
-   ![Screenshot (125)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (125).png)
+![Screenshot (125)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (125).png)
 
-   ![Screenshot (126)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (126).png)
+![Screenshot (126)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (126).png)
 
 
 
@@ -186,7 +185,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo chown -R $USER$USER /var/www/projectLEMP`
 
-   ![Screenshot (127)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (127).png)
+![Screenshot (127)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (127).png)
 
 
 
@@ -218,7 +217,7 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    }`
 
-   ![Screenshot (128)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (128).png)
+![Screenshot (128)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (128).png)
 
 **Here's what each of these directives and location blocks do:**
 
@@ -248,7 +247,7 @@ This will tell Nginx to use configuration next time it is reloaded
 
    `sudo echo ‘Hello LEMP from hostname’ $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) ‘with public IP’ $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html`
 
-   ![Screenshot (132)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (132).png)
+![Screenshot (132)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (132).png)
 
 
 
@@ -324,7 +323,7 @@ after checking the details about PHP is best to remove the file as it contain se
 
    `SELECT * FROM example_database.todo_list;`
 
-   ![Screenshot (136)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (136).png)
+ ![Screenshot (136)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (136).png)
 
 9. **Exit** 
 
@@ -363,7 +362,7 @@ after checking the details about PHP is best to remove the file as it contain se
 
     `http://13.50.251.199/todo_list.php`
 
-    ![Screenshot (144)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (144).png)
+![Screenshot (144)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (144).png)
 
     
 
