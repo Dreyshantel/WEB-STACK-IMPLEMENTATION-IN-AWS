@@ -23,9 +23,10 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    - Click on "Launch instance" and choose Ubuntu Server 20.04 LTS as the operating system
 
-![Screenshot (107)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (107).png)
+![Screenshot (107)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/d5c6a3ad-88d6-433d-8783-6a1a3f020746)
 
-![Screenshot (108)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (108).png)
+![Screenshot (108)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/6b37154d-a5c7-45af-8e55-21917a380a53)
+
 
 
 
@@ -46,13 +47,15 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
    - Create a new security group or use an existing one.
    - Allow inbound traffic on port 80 (HTTP, 433 (HTTPS), 22 (SHH) from your IP address
 
- ![Screenshot (141)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (141).png)
+![Screenshot (141)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/f1735ab5-b8b0-437e-b7e6-f6bb5b8b6c45)
+
 
 6. **Review and launch:**
 
    - Review the configuration and launch the instance.
 
- ![Screenshot (112)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (112).png)
+![Screenshot (112)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/666b2093-ba7b-432e-9964-bed4d6992b18)
+
 
 7. **Connect to the Instance**
 
@@ -64,7 +67,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `ssh -i "my_ec2-key.pem" 16.16.223.129`
 
-![Screenshot (114)](C:\Users\Shantel\Desktop\LEMP stack project\ec2 instance\Screenshot (114).png)
+![Screenshot (114)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/d4f56243-8190-4a36-8a51-b9ab362eeb7b)
+
 
 # 
 
@@ -78,7 +82,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo apt install nginx`
 
-![Screenshot (116)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (116).png)
+![Screenshot (116)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/1773836a-dd5e-4a12-900e-16963ad99e49)
+
 
 
 
@@ -90,7 +95,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    if it is active and running, then nginx is successfully installed
 
-![Screenshot (117)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (117).png)
+![Screenshot (117)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/183fd98f-3e57-47f4-a24e-634636223ec4)
+
 
 
 
@@ -100,7 +106,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo curl http://<public-IP-Address>:80`
 
-![Screenshot (118)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (118).png)
+![Screenshot (118)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/fc14b8f8-f070-49cc-a51d-6a2841e17201)
+
 
    
 
@@ -109,7 +116,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
    `http://<public-IP-Address>:80`
 
    
-![Screenshot (119)](C:\Users\Shantel\Desktop\LEMP stack project\install Nginx\Screenshot (119).png)
+![Screenshot (119)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/678c11d2-4289-4168-bb96-8a891369297b)
+
 
 
 
@@ -121,9 +129,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo apt install mysql-server`
 
-   
+   ![Screenshot (120)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/091d2eef-12e0-417e-92f7-69e56cd06ee2)
 
-![Screenshot (120)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (120).png)
 
 2. **Logging into MySQL console**
 
@@ -143,17 +150,17 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo mysql_secure_installation`
 
-![Screenshot (123)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (123).png)
+![Screenshot (123)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/0395f667-d584-41c6-803c-f45ba1410a11)
 
-![Screenshot (124)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (124).png)
-
+![Screenshot (124)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/e2701ad4-acb7-472b-894e-0170626ecc87)
 
 
 6. **Test if you're able to log in to the MySQL console**
 
    `sudo mysql -p`
 
- ![Screenshot (122)](C:\Users\Shantel\Desktop\LEMP stack project\install RDBMS\Screenshot (122).png)
+![Screenshot (122)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/94033dc3-bafc-4200-ada1-2eeee66fadd9)
+
 
 7. **Exit the MySQL console**
 
@@ -169,9 +176,9 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    When prompted type y and press ENTER for confirmation
 
-![Screenshot (125)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (125).png)
+![Screenshot (125)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/5d2d7544-a122-41f0-98e3-1b332ee5cf77)
+![Screenshot (126)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/8414fc1c-2e99-4fb0-87b2-d696d44653cf)
 
-![Screenshot (126)](C:\Users\Shantel\Desktop\LEMP stack project\install PHP\Screenshot (126).png)
 
 
 
@@ -185,7 +192,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    `sudo chown -R $USER$USER /var/www/projectLEMP`
 
-![Screenshot (127)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (127).png)
+![Screenshot (127)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/0d13b52c-2117-4bfa-a978-94da492da355)
+
 
 
 
@@ -217,7 +225,8 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
    }`
 
-![Screenshot (128)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (128).png)
+![Screenshot (128)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/94a95ac2-f472-45b3-bea9-92f7c4c33e07)
+
 
 **Here's what each of these directives and location blocks do:**
 
@@ -247,12 +256,12 @@ This will tell Nginx to use configuration next time it is reloaded
 
    `sudo echo ‘Hello LEMP from hostname’ $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) ‘with public IP’ $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html`
 
-![Screenshot (132)](C:\Users\Shantel\Desktop\LEMP stack project\configure nginx\Screenshot (132).png)
+![Screenshot (132)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/541c1ed2-74be-4f1e-a821-d65c1d60373d)
+
 
 
 
 ### Step 5 - Testing PHP with Nginx
-
 1. **Create a PHP file in the document root. Open a new file called info.php within the document root.**
 
    `sudo nano /var/www/projectLEMP/info.php`
@@ -265,8 +274,8 @@ This will tell Nginx to use configuration next time it is reloaded
 2.  **Access the page on the browser and attach /info.php**
 
 `http://16.16.233.129`
+![Screenshot (133)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/be62a3e2-3ef7-4fc3-b049-49244a06b5f7)
 
-![Screenshot (133)](C:\Users\Shantel\Desktop\LEMP stack project\Testing PHP with Nginx\Screenshot (133).png)
 
 after checking the details about PHP is best to remove the file as it contain sensitive information
 
@@ -323,7 +332,8 @@ after checking the details about PHP is best to remove the file as it contain se
 
    `SELECT * FROM example_database.todo_list;`
 
- ![Screenshot (136)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (136).png)
+ ![Screenshot (136)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/bf6ddeee-1f3c-4030-bd9f-08e1997f4708)
+
 
 9. **Exit** 
 
@@ -355,14 +365,15 @@ after checking the details about PHP is best to remove the file as it contain se
     }
 
     ?>`
+![Screenshot (139)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/9ea4dea1-cc2b-47dd-b487-14b6b0be5350)
 
-![image-20240602044931055](C:\Users\Shantel\AppData\Roaming\Typora\typora-user-images\image-20240602044931055.png)
 
 12. **Save and close the file when you are done editing. Access the page by using IP address or domain name**
 
     `http://13.50.251.199/todo_list.php`
 
-![Screenshot (144)](C:\Users\Shantel\Pictures\Screenshots\Screenshot (144).png)
+![Screenshot (144)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/eb50122b-8d4e-490c-ae22-adba5a60d6b9)
+
 
     
 
