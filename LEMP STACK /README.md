@@ -32,27 +32,27 @@ This project is a documentation guide to setting up LEMP (Linux, Nginx, MySQL, P
 
 2. **Configure Instance Details:**
 
-   - Choose instance type, network, subnet, and other required settings.
+    - Choose instance type, network, subnet, and other required settings.
 
 3.  **Add Storage**
 
-   - Allocate storage space for according to your requirement
+    - Allocate storage space for according to your requirement
 
 4.  **Add Tags:**
 
-   - Optionally, add tags for better organization
+    - Optionally, add tags for better organization
 
 5.  **Configure Security Group**
 
-   - Create a new security group or use an existing one.
-   - Allow inbound traffic on port 80 (HTTP, 433 (HTTPS), 22 (SHH) from your IP address
+    - Create a new security group or use an existing one.
+    - Allow inbound traffic on port 80 (HTTP, 433 (HTTPS), 22 (SHH) from your IP address
 
 ![Screenshot (141)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/f1735ab5-b8b0-437e-b7e6-f6bb5b8b6c45)
 
 
 6. **Review and launch:**
 
-   - Review the configuration and launch the instance.
+  - Review the configuration and launch the instance.
 
 ![Screenshot (112)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/666b2093-ba7b-432e-9964-bed4d6992b18)
 
