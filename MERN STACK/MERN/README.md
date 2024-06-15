@@ -717,7 +717,33 @@ cd ../..
 ```
 **Run the code below**
 ```
-npm run dev
+sudo npm run dev
 ```
+![Screenshot (258)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/b538a266-46d7-45c0-99f6-4d7b3d372340)
+![Screenshot (259)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/b3ca63fc-923e-421a-971f-cbb021bc54c8)
+### Now our Todo App is ready for use and fully functional with creating a task , deleting a task and viewing all the task.
+![Screenshot (260)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/eb76da90-8736-47d5-b7d2-1b1ea6e0c865)
+### Conclusion:
+Creating a Todo application using the MERN stack has been an extensive project, covering critical aspects of full-stack web development. Here’s what I’ve accomplished:
+
+1. **Environment Setup and Configuration:** I established the groundwork by installing and configuring Node.js, MongoDB, and relevant dependencies.
+
+2. **RESTful API Design and Implementation:** Leveraging Express.js, I developed a backend that effectively manages CRUD operations, enabling seamless todo management.
+
+3. **MongoDB Integration:** Utilizing Mongoose, I defined schemas and models for structured interactions with the MongoDB database.
+
+4. **Frontend Development with React:** Using React.js, I crafted a dynamic and responsive user interface, facilitating intuitive user interactions.
+
+5. **Frontend-Backend Integration:** By configuring proxies and implementing asynchronous API calls, I successfully linked the frontend and backend, creating a fully functional application.
+
+6. **State Management:** Within React components, I proficiently managed state to maintain data consistency and enhance user experience.
+
+7. **Error Handling and Debugging:** Implementing robust logging and error-handling mechanisms ensured the application’s reliability and maintainability.
+
+8. **API Testing:** Verified API functionality using tools like Postman to ensure seamless operation.
+
+Through this project, I've gained valuable experience in building scalable, responsive web applications using the MERN stack.
+
+
 
 
