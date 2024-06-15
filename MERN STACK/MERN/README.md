@@ -337,6 +337,175 @@ app.listen(port, () => {
 ![Screenshot (186)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/ab84fd81-78e4-41ca-a2c9-42d0159d1573)
 
 6. **Start your server**
-   ```
-   node index.js
-  ```
+```
+node index.js
+```
+### Testing Backend code without frontend using RESTful API
+Postman will be used to test the backend code . the endpoints were tested using POST , GET requets Set the header send a post request
+![Screenshot (212)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/5fcf6af5-3e31-4d14-be96-50a2f78cb68c)
+send a get request
+![Screenshot (213)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/c9e71e40-bcb7-4a52-818f-1f28b05695ac)
+
+### STEP:2 Frontend Creation
+now is time to create the client-side of the application in the Todo folder of your application run the code below
+```
+npx create-react-app client
+```
+This command created a new folder in the Todo directory called client, where all the react code was added.
+
+### Running a React App
+Before testing the react app, the following dependencies needs to be installed in the project root directory. Install concurrently. It is used to run more than one command simultaneously from the same terminal window.
+```
+npm install concurrently --save-dev
+```
+![Screenshot (215)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/5ba3fab6-323f-4eab-b5c4-804b7ea23858)
+Install nodemon. It is used to run and monitor the server. If there is any change in the server code, nodemon will restart it automatically and load the new changes.
+```
+npm install nodemon --save-dev
+```
+![Screenshot (216)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/0538744c-d084-4a8e-a92f-d0db392e3e86)
+In Todo folder open the package.json file, change the highlighted part of the below screenshot and replace with the code below:
+```
+"scripts": {
+  "start": "node index.js",
+  "start-watch": "nodemon index.js",
+  "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
+}
+```
+![Screenshot (217)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/6e330f8b-50ce-41b8-95f0-4ab9a73dcdb5)
+
+### Change proxy package in package.json
+change directory
+```
+cd client
+```
+Open the package.json file
+```
+vim package.json
+```
+Add the key value pair in the package.json file
+```
+“proxy”: “http://localhost:5000”
+```
+![Screenshot (244)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/265ace1c-ca30-43bb-a6ff-1c96226b91e4)
+The whole purpose of adding the proxy configuration above is to make it possible to access the application directly from the browser by simply calling the server url like http://locathost:5000 rather than always including the entire path like http://localhost:5000/api/todos
+Ensure you are inside the Todo directory, and simply do:
+```
+sudo npm run dev
+```
+![Screenshot (242)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/b224803a-5dae-4be2-b9bc-d273509ab2e5)
+![Screenshot (243)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/74ac20cb-0d5f-4643-92db-59cf2d8b737b)
+The app opened and started running on localhost:3000 Note: In order to access the application from the internet, TCP port 3000 had been opened on EC2.
+
+### Creating React Components
+One of the advantages of react is that it makes use of components, which are reusable and also makes code modular. For the Todo app, there are two stateful components and one stateless component. From Todo directory, run:
+```
+cd client
+```
+1. **change directory to src**
+```
+cd src
+```
+2. **Inside your src folder, create another folder called “components”**
+```
+mkdir components
+```
+3. **Inside the ‘components’ directory create three files “Input.js”, “ListTodo.js” and “Todo.js”.**
+```
+touch Input.js ListTodo.js Todo.js
+```
+![Screenshot (248)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/1718961a-efe2-4bf7-bd1f-fef5cb3b8f2c)
+Open Input.js file
+```
+vim Input.js
+```
+Paste the following code in it.
+```
+import React, { Component } from 'react';
+import axios from 'axios';
+
+class Input extends Component {
+  state = {
+    action: ""
+  }
+
+  handleChange = (event) => {
+    this.setState({ action: event.target.value });
+  }
+
+  addTodo = () => {
+    const task = { action: this.state.action };
+
+    if (task.action && task.action.length > 0) {
+      axios.post('/api/todos', task)
+        .then(res => {
+          if (res.data) {
+            this.props.getTodos();
+            this.setState({ action: "" });
+          }
+        })
+        .catch(err => console.log(err));
+    } else {
+      console.log('Input field required');
+    }
+  }
+
+  render() {
+    let { action } = this.state;
+    return (
+      <div>
+        <input type="text" onChange={this.handleChange} value={action} />
+        <button onClick={this.addTodo}>add todo</button>
+      </div>
+    );
+  }
+}
+
+export default Input;
+```
+![Screenshot (248)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/aa849642-61c2-4d83-8a07-0a8c5eeaa46d)
+In oder to make use of Axios, which is a Promise based HTTP client for the browser and node.js, you need to cd into your client from your terminal and run yarn add axios or npm install axios.
+Move to the client folder
+```
+cd ../..
+```
+run the below command to Install Axios
+```
+npm install axios
+```
+![Screenshot (250)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/b5c7ecf0-6e78-450d-956b-7a7557166297)
+Go to components directory
+```
+cd src/components
+```
+After that open the ListTodo.js
+```
+vim ListTodo.js
+```
+Copy and paste the following code:
+```
+import React from 'react';
+
+const ListTodo = ({ todos, deleteTodo }) => {
+  return (
+    <ul>
+      {
+        todos && todos.length > 0 ? (
+          todos.map(todo => {
+            return (
+              <li key={todo._id} onClick={() => deleteTodo(todo._id)}>
+                {todo.action}
+              </li>
+            );
+          })
+        ) : (
+          <li>No todo(s) left</li>
+        )
+      }
+    </ul>
+  );
+}
+
+export default ListTodo;
+
+
