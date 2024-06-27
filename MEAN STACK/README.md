@@ -454,4 +454,14 @@ node server.js
 ![Screenshot (327)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/803a8ab2-9bf8-437e-96bb-8f598f4c0934)
 The server is now up and running, we can connect it via port 3300. You can launch a separate Putty or SSH console to test what curl command returns locally
 **Edit the inbound rule to allow all traffic into port 3300**
-
+![Screenshot (328)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/1d9073ba-24c5-4dfc-9787-526fe4c9c7e8)
+**Open a new tab on your browser and type the ip address enroute port 3300**
+```
+http://51.20.187.243:3300
+```
+Our application is live and running
+![Screenshot (329)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/11b0fde3-a092-4d8e-b1f7-f5a04b125122)
+Add Books
+![Screenshot (330)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/05043495-76dd-4aa1-a4f2-93a6145b2f2e)
+### Conclusion
+The MEAN stack, consisting of MongoDB, Express.js, Angular, and Node.js, offers a robust and unified framework for creating dynamic and scalable web applications. Utilizing JavaScript on both the client and server sides, it enables developers to simplify the development process and boost efficiency.
