@@ -112,7 +112,8 @@ sudo apt install mysql-client -y
 By default, the two EC2 virtual servers are located in the same local virtual network, so they can communicate to each other using local IP addresses.
 
 **Edit inbound rule of mysql server to allow traffic into port 3306 , specifying only the mysql client ip address access**
-![Screenshot (348)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/00d889bd-2cfa-463f-b050-1c44ce474443)
+![Screenshot (354)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/a7f765b3-544d-4ca7-8d04-68cd4751b3ac)
+
 **configure MySQL server to allow connections from remote hosts.**
 ```
 sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -138,3 +139,13 @@ FLUSH PRIVILEGES;
 ```
 ![Screenshot (351)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/aeb14377-8236-4f7a-a8ce-564c9b127ff0)
 connect to mysql server using the command below
+
+![Screenshot (356)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/86636ad8-44a2-4223-89f5-22f96ebebfff)
+**Check that you have successfully connected to a remote MySQL server and can perform SQL queries**
+```
+show databases;
+```
+![image](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/2e8dead1-ef23-4e4f-a605-f5549f7b501e)
+
+we have successfully completed this project - we have deloyed a fully functional MySQL Client-Server set up
+
