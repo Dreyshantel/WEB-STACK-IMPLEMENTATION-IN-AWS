@@ -191,3 +191,176 @@ sudo systemctl daemon-reload
 **Verify your setup by running df -h, output must look like this:**
 ![image](https://github.com/user-attachments/assets/a24b2d80-174b-4775-a3f8-4a8be8d82428)
 
+### Step 2 -  Prepere The Database
+Launch a second RedHat EC2 instance that will have a role - 'DB Server' Repeat the same steps as for thr web Server, but instead of apps-lv create db-lv and mount it to /db directory instead of /var/www/html/.
+
+ 
+ 1. **Launch an EC2 instance**
+   - sign in to the AWS management console
+   - Navigate to EC2 instance dashboard
+   - Click on launch "Launch instance" and choose Red Hat Enterprise Linux 9 (HVM)
+     ![Screenshot (446)](https://github.com/user-attachments/assets/f1ef5609-9122-4113-8d7e-58c706df32f8)
+
+2. **Configure instance details**
+   - Choose instance type, network subnet and other required settings
+
+3. **Add Storage**
+   - Allocate storage space according to your requirement
+
+4. **Add Tags**
+   - Optionally, add tag for better organinzation
+
+5. **Configure security group**
+   - Create a new security group or use an existing one.
+   - Allow inbound traffic on port 80 (HTTP), 433 (HTTPS), and port 22 (SSH) from your IP address
+
+6. **Review and launch**
+   - Review the configuration and launch the instance 
+
+7. **Connect to the instance**
+   - connect to your server through your preferred terminal via SSH
+
+2. **Configure instance details**
+   - Choose instance type, network subnet and other required settings
+
+3. **Add Storage**
+   - Allocate storage space according to your requirement
+
+4. **Add Tags**
+   - Optionally, add tag for better organinzation
+
+5. **Configure security group**
+   - Create a new security group or use an existing one.
+   - Allow inbound traffic on port 80 (HTTP), 433 (HTTPS), and port 22 (SSH) from your IP address
+
+6. **Review and launch**
+   - Review the configuration and launch the instance 
+
+7. **Connect to the instance**
+   - connect to your server through your preferred terminal via SSH
+![Screenshot (480)](https://github.com/user-attachments/assets/8e8c3582-e71d-4b35-b892-69653397ecb3)
+
+Repeat the same steps as for the Web Server, but instead of appslv create db-lv and mount it to /db directory instead of /var/www/html/. ". Create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.
+![image](https://github.com/user-attachments/assets/6388fa98-6968-43f4-ae70-5b510ebcc582)
+
+**Use lsblk command to inspect what block devices are attached to the server.**
+```
+lsblk
+```
+![image](https://github.com/user-attachments/assets/cb194962-dcd1-4e82-93ba-0b5010b38d76)
+
+**Use df -h to see all mounts and free space on the server.**
+```
+df -h
+```
+![image](https://github.com/user-attachments/assets/61794e08-40b4-4127-90d9-cf4e4b0443be)
+
+**Use gdisk utility to create a single partition on each of the 3 disks**
+```
+sudo gdisk /dev/nvme1n1
+sudo gdisk /dev/nvme2n1
+sudo gdisk /dev/nvme3n1
+```
+![Screenshot (484)](https://github.com/user-attachments/assets/2c70f928-10b7-4f75-8d48-ee020edfde91)
+
+**Use lsblk utility to view the newly configured partition on each of the 3 disks.**
+```
+lsblk
+```
+![image](https://github.com/user-attachments/assets/0c752d93-e2c3-4f37-98ea-653057e660ef)
+
+**Install lvm2 package using:**
+```
+sudo yum install lvm2
+```
+![Screenshot (486)](https://github.com/user-attachments/assets/9077ae91-cca1-4eb5-a29b-230b0f6889a0)
+
+**Run sudo ```lvmdiskscan``` command to check for available partitions**
+![image](https://github.com/user-attachments/assets/807f2424-3463-4bc9-b353-16b22b6974aa)
+
+**Use pvcreate utility to mark each of 3 disks as physical volumes (PVs) to be used by LVM**
+```
+sudo pvcreate /dev/nvme1n1p1
+sudo pvcreate /dev/nvme2n1p1
+sudo pvcreate /dev/nvme3n1p1
+```
+![image](https://github.com/user-attachments/assets/422a07aa-e401-4a3e-ad38-9265120f281a)
+
+
+**Verify that your Physical volume has been created successfully by running sudo pvs sudo pvs**
+![image](https://github.com/user-attachments/assets/47b6dc89-5ef9-4708-9707-d1071ac1ce65)
+
+**Use vgcreate utility to add all 3 PVs to a volume group (VG). Name the VG webdata-vg**
+```
+sudo vgcreate database-vg /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
+```
+
+**Verify that your VG has been created successfully by running ```sudo vgs``**
+![image](https://github.com/user-attachments/assets/bbbcbea4-3d40-471f-b2fb-d762bab122ae)
+
+
+**Use lvcreate utility to create a logical volume, db-lv (Use 20G of the PV size since it is the only LV to be created). Verify that the logical volumes have been created successfully**
+```
+sudo lvcreate -n db-lv -L 20G database-vg
+sudo lvs
+```
+![image](https://github.com/user-attachments/assets/a9a15273-2683-4905-8c21-ac5d04ecaf15)
+
+**Use mkfs.ext4 to format the logical volumes with ext4 filesystem and monut /db on db-lv**
+```
+sudo mkfs.ext4 /dev/database-vg/db-lv
+sudo mount /dev/database-vg/db-lv /db
+```
+
+**Update /etc/fstab file so that the mount configuration will persist after restart of the server Get the UUID of the device**
+```
+sudo blkid
+```
+**Update the /etc/fstab file with the format shown inside the file using the UUID. Remember to remove the leading and ending quotes**
+```
+sudo vi /etc/fstab
+```
+![image](https://github.com/user-attachments/assets/e28a070a-81b2-4e20-b418-53eea4e6aa1c)
+
+**Test the configuration and reload daemon. Verify the setup**
+```
+sudo mount -a   # Test the configuration
+
+sudo systemctl daemon-reload
+
+df -h   # Verifies the setup
+```
+![image](https://github.com/user-attachments/assets/21d46423-d918-4fd8-9eff-50c7208121e9)
+
+
+### Step 3 - Install WordPress on your Web Server EC2
+1. **Update the repository**
+   ```
+   sudo yum -y update
+   ```
+2. **Install wget, Apache and it's dependencies**
+```
+sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json
+```
+![image](https://github.com/user-attachments/assets/41452740-ad91-4511-9e78-5daa4cdac5f2)
+
+3. **Start Apache**
+```
+sudo systemctl enable httpd
+sudo systemctl start httpd
+```
+![image](https://github.com/user-attachments/assets/449820fb-c145-4353-99ee-8fc4d42f018d)
+
+4. **To install PHP and it's dependencies Enable EPEL Repository**
+```
+sudo dnf install -y epel-release
+```
+5. **Enable Remi Repository:**
+```
+sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+```
+6. **Enable the PHP Module using dnf**
+```
+sudo dnf module reset php
+sudo dnf module enable php:8.2
+```
