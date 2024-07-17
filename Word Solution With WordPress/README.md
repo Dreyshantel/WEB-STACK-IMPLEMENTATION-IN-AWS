@@ -364,3 +364,77 @@ sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 sudo dnf module reset php
 sudo dnf module enable php:8.2
 ```
+**Install PHP**
+```
+sudo dnf install -y php php-cli php-fpm php-json php-common php-mysqlnd php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath php-json
+```
+**Start and enable PHP-FPM service**
+```
+sudo systemctl start php-fpm
+sudo systemctl enable php-fpm
+```
+
+
+**Verify PHP Installation**
+```
+php -v
+```
+![image](https://github.com/user-attachments/assets/22a8958e-ea32-4246-ba15-20ff2e699eb9)
+
+**Restart Apache**
+```
+sudo systemctl restart httpd
+```
+
+**Download wordpress and copy wordpress to /var/www/htmlmkdir wordpress**
+```
+mkdir wordpress
+sudo wget http://wordpress.org/latest.tar.gz sudo tar xzvf latest.tar.gz
+sudo rm -rf latest.tar.gz cp wordpress/wp-config-sample.php wordpress/wpconfig.php
+cp -R wordpress /var/www/html/
+```
+![Screenshot (498)](https://github.com/user-attachments/assets/0d520b49-48d6-4b4a-ba57-1fe4b53758e3)
+
+**Configure SELinux policies**
+```
+sudo chown -R apache:apache /var/www/html/wordpress
+sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+sudo setsebool -P httpd_can_network_connect=1
+```
+
+
+### Step 4 - Install MySQL on the Database server EC2
+```
+sudo yum update
+sudo yum install mysql-server
+```
+Verify that the server is up and running using sudo systemctl status mysqld, if it is not running, restart the service and enable it so that it will be running even after reboot
+```
+sudo systemctl restart mysqld
+sudo systemctl enable mysqld
+sudo systemctl status mysqld
+```
+![Screenshot (499)](https://github.com/user-attachments/assets/8fc6442d-6f71-4280-8081-482258efdd71)
+
+### Step 5 - Configure Database to work with wordpress
+```
+sudo mysql
+CREATE DATABASE wordpress;
+CREATE USER myuser '@'172.31.38.223' IDENTIFIED BY 'mypass';
+GRANT ALL ON wordpress.* TO 'myuser'@'172.31.38.223';
+FLUSH PRIVILEGE;
+SHOW DATABASES;
+exit
+```
+![image](https://github.com/user-attachments/assets/19a4d02b-c188-4e79-8f81-9990512a67f0)
+
+### Step 6 - Configure WordPress to connect to remote database.
+Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, allow access to the DB server only from your web Server's IP address, so in the bound configuration specify source as /32
+![Screenshot (501)](https://github.com/user-attachments/assets/9539ff6c-9111-47db-840f-f4b3783c8ba1)
+
+1. Install MySQL client and test that you can connect from your web Server to your DB Server by using mysql-client
+```
+sudo yum install mysql
+sudo mysql -u admin -p -h 172.31.44.175
+![Screenshot (502)](https://github.com/user-attachments/assets/6befbb70-d54a-47b2-a257-16f3d6f852e3)
+
