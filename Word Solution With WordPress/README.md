@@ -433,8 +433,27 @@ Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, allo
 ![Screenshot (501)](https://github.com/user-attachments/assets/9539ff6c-9111-47db-840f-f4b3783c8ba1)
 
 1. Install MySQL client and test that you can connect from your web Server to your DB Server by using mysql-client
-```
+
 sudo yum install mysql
 sudo mysql -u admin -p -h 172.31.44.175
+
 ![Screenshot (502)](https://github.com/user-attachments/assets/6befbb70-d54a-47b2-a257-16f3d6f852e3)
+
+#### Access the WordPress Site
+To access the WordPress site, open a web browser and enter the public IP of the web server instance in the address bar.
+![Screenshot (507)](https://github.com/user-attachments/assets/9c8aad02-e7a2-4ede-adfc-058ddf8ba986)
+
+Configure and install wordpress
+![Screenshot (508)](https://github.com/user-attachments/assets/e81a2cba-9387-45fe-b198-4afabec3a9ba)
+
+**The WordPress Admin Dashboard**
+![Screenshot (509)](https://github.com/user-attachments/assets/cfe021b8-3506-43bb-8997-e2352a13a455)
+
+### Conclusion
+In this project, I successfully established a WordPress web solution from the ground up. I gained experience in setting up both a physical web server and a database server, as well as configuring the WordPress server. Additionally, I focused on optimizing storage for enhanced performance and scalability by employing disk partitioning techniques. This involved using tools like gdisk, mkfs, and mount to manage disk partitions effectively in Linux.
+
+
+
+
+
 
