@@ -175,10 +175,13 @@ sudo mount -t nfs -o rw,nosuid 172.31.24.35:/mnt/apps /var/www
 ![image](https://github.com/user-attachments/assets/e1b9eaae-3ac4-4f7d-a977-9fec909dd556)
 
 8. Install Remi's repository, Apache and PHP
-``
+```
 sudo yum install httpd -y
 ```
 ![Screenshot (536)](https://github.com/user-attachments/assets/95bfa40d-5ce3-4f5b-a57f-dbd19a43e99b)
+
+
+
 
 ```
 sudo dnf install https://fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
@@ -217,9 +220,48 @@ sudo mkdir /var/www
 sudo mount -t nfs -o rw,nosuid 172.31.28.107:/mnt/apps /var/www
 ```
 
+
 4. Verify that NFS was mounted successfully by running df -h. Make sure that the changes will persist on Web Server after reboot:
 ![image](https://github.com/user-attachments/assets/3bb3dd3b-e431-4f11-a71c-234de1d33bb7)
 
 ```
 sudo vi /etc/fstab
 ```
+
+Add the following
+```
+172.31.24.35:/mnt/apps /var/www nfs defaults 0 0
+```
+![image](https://github.com/user-attachments/assets/098a7e74-b593-4efb-9a97-537e98629866)
+
+5. Install Remi's repository, Apache and PHP
+```
+sudo yum install httpd -y
+```
+
+```
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+```
+![Screenshot (543)](https://github.com/user-attachments/assets/603e53c4-4c18-469c-b03d-c505223a6b51)
+
+
+```
+sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+```
+
+```
+sudo dnf module enable php:remi-8.2
+sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+```
+
+```
+sudo systemctl start php-fpm
+sudo systemctl enable php-fpm
+sudo systemctl status php-fpm
+
+sudo setsebool -P httpd_execmem 1  # Allows the Apache HTTP server (httpd) to execute memory that it can also write to. This is often needed for certain types of dynamic content and applications that may need to generate and execute code at runtime.
+sudo setsebool -P httpd_can_network_connect=1   # Allows the Apache HTTP server to make network connections to other servers.
+sudo setsebool -P httpd_can_network_connect_db=1  # allows the Apache HTTP server to connect to remote database servers.
+```
+
+
