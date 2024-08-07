@@ -147,5 +147,5 @@ show databases;
 ```
 ![image](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/assets/109143806/2e8dead1-ef23-4e4f-a605-f5549f7b501e)
 
-we have successfully completed this project - we have deloyed a fully functional MySQL Client-Server set up
+we have successfully completed this project - we have deployed a fully functional MySQL Client-Server set up
 
