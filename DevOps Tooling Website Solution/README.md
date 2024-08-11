@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/62eac7e3-570b-44cf-a6d1-4569d9eeca0d)# DevOps Tooling Website Solution
+# DevOps Tooling Website Solution
 ### Overview
 This project introduce a set of DevOps tools that will help our team in day to day activities in managing, developing, testing, deploying and monitoring different projects.
 
