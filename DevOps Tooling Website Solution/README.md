@@ -387,4 +387,5 @@ INSERT INTO users(id, username, password, email, user_type, status) VALUES (2, '
 ![Screenshot (552)](https://github.com/user-attachments/assets/c17f82af-eaa5-4ee4-a746-46ac2ea4627b)
 
 ### Acess the website
+Access the website using the web server IP-address/index.php
 ![Screenshot (554)](https://github.com/user-attachments/assets/74e557b7-6a2f-4b72-92e2-c548e2391fa3)
