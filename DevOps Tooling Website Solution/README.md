@@ -329,4 +329,62 @@ sudo setsebool -P httpd_can_network_connect=1   # Allows the Apache HTTP server 
 sudo setsebool -P httpd_can_network_connect_db=1  # allows the Apache HTTP server to connect to remote database servers.
 ```
 
+### Fork the tooling source code from steghub github account
+![Screenshot (550)](https://github.com/user-attachments/assets/2306b8b0-9783-47d7-b232-a7f396b0218a)
 
+
+Deploy the tooling Website's code to the Web Server. Ensure that the html folder from the repository is deplyed to /var/www/html 
+1. Install git
+```
+sudo yum install git
+```
+![Screenshot (551)](https://github.com/user-attachments/assets/f3513873-ee73-4761-83c4-fc149101a29c)
+
+
+2. Initialize git
+```
+git init
+```
+
+3. clone the forked repository
+```
+git clone https://github.com/Dreyshantel/tooling.git
+```
+
+
+Note: Acces the website on a browser
+Ensure TCP port 80 is open on the Web Server. If 403 Error occur, check permissions to the /var/www/html folder and also disable SELinux
+```
+sudo setenforce 
+```
+
+To make the change permanent, open selinux file and set selinux to disable.
+```
+sudo vi /etc/sysconfig/selinux
+
+SELINUX=disabled
+
+sudo systemctl restart httpd
+```
+
+**Update the website's configuration to connect to the database in (/var/www/html/function.php file). Apply tooling-db.sql command sudo mysql -h -u -p <db-password < tooling-db.sql**
+
+```
+sudo vi /var/www/html/functions.php
+```
+
+```
+sudo mysql -h 172.31.34.58 -u webaccess -p tooling < /var/www/html/tooling-db.sql
+```
+
+**Create in MySQL a new admin user with username: myuser and password: password**
+
+```
+INSERT INTO users(id, username, password, email, user_type, status) VALUES (2, 'myuser', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
+```
+
+
+![Screenshot (552)](https://github.com/user-attachments/assets/c17f82af-eaa5-4ee4-a746-46ac2ea4627b)
+
+### Acess the website
+![Screenshot (554)](https://github.com/user-attachments/assets/74e557b7-6a2f-4b72-92e2-c548e2391fa3)
