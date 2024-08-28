@@ -124,3 +124,24 @@ sudo certbot --nginx
 ![image](https://github.com/user-attachments/assets/ab3c1cdb-e46e-4600-9b2a-831d290e5c77)
 
 Test secured access to your Web solution by trying to reach https://tooling.twilightparadox.com
+![Screenshot (628)](https://github.com/user-attachments/assets/edf4f998-d6a4-4968-99c7-89ae3c3ca864)
+
+
+6. Set up periodical renewal of your SSL/TLS certifficate
+By default, let's encrypt certificate is valid for 90 days, so it is recommendable to renew it at least every 60 days or more frequently
+   - You can test renewal command in dry-run mode
+```
+sudo certbot renew --dry-run
+```
+![image](https://github.com/user-attachments/assets/eb83683a-2860-468e-a1af-b21612e2ff22)
+
+Best practice is to have a scheduled job that to run renew command periodically. Lets us configure a cronjob to run the command twice a day. To do so let's edit crontab file with the following command:
+```
+crontab -e
+```
+Add the following line:
+```
+* */12 * * * root /usr/bin/certbot renew > /dev/null 2>&1
+```
+![Screenshot (630)](https://github.com/user-attachments/assets/25c8f21b-5ec5-47a7-a159-04e586e24a42)
+You can always change the interval of this cronjob if twice a day is too often by adjusting schedule expression
