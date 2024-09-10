@@ -35,3 +35,94 @@ chmod - R 0777 /home/ubuntu/ansible-config-artifact
 ![Screenshot (673)](https://github.com/user-attachments/assets/5eba4435-e80d-4991-97ef-4fcea100b3d6)
 
 7. Test your set up by making some change in README.md file inside your ansible-config-mgt repository (right inside main branch). If both Jenkins jobs have completed one after another - you shall see your files inside /home/ubuntu/ansible-config-artifact directory and it will be updated with every commit to your main branch
+
+### Step 2 - Refactor Ansible code by importing other playbooks into site.yml
+DevOps philosophy implies constant iterative improvement for better efficiency - refactoring is one of the techniques that can be used.
+
+1. Ceate a new branch and name it branch
+```
+git branch refactor
+git branch -l
+```
+
+In previous project, we wrote all tasks in a single playbook common.yml. it will become tedious to use one playbook for multiple servers as the playbook will become messy with commented parts.
+
+2. Within playbooks folder, create a new file and name it site.yml
+```
+cd playbooks
+touch site.yml
+ls
+```
+![Screenshot (674)](https://github.com/user-attachments/assets/e0645264-30af-4f77-b73c-165896479e9c)
+
+
+This file will now be considered as an entry point into the entire infrastructure configuration. Other playbooks will be included here as a reference. In other words, site.yml will become a parent to all other playbooks that will be developed. Including common.yml that you created previously.
+
+
+2. Create a new folder in root of the repository and name it static-assignments
+```
+mkdir static-assignments
+ls
+```
+The static-assignments folder is where all other children playbooks will be stored
+
+
+3. Move common.yml file into the newly created static-assignments folder
+![Screenshot (675)](https://github.com/user-attachments/assets/e2abfbf7-5c3e-4b0e-a712-f5bdf3fd9a94)
+
+
+4. Inside site.yml file, import common.yml playbook.
+```
+---
+hosts: all
+import_playbook: ../static-assignments/common.yml
+```
+![Screenshot (676)](https://github.com/user-attachments/assets/91dc79ad-c110-4271-8b7d-688f0b6ffde3)
+
+
+5. Run ansible-playbook command against the dev environment create another playbook under static-assignments and name it common-del.yml. In this playbook, configure deletion of wireshark utility.
+```
+touch common-del.yml
+vi common-del.yml
+```
+
+paste the following code in it
+```
+---
+- name: Update web, NFS, and DB servers
+  hosts: webservers, nfs, db
+  remote_user: ec2-user
+  become: yes
+  become_user: root
+  tasks:
+    - name: Delete Wireshark
+      yum:
+        name: wireshark
+        state: removed
+
+- name: Update LB server
+  hosts: lb
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: Delete Wireshark
+      apt:
+        name: wireshark-qt
+        state: absent
+        autoremove: yes
+        purge: yes
+        autoclean: yes
+```
+![Screenshot (677)](https://github.com/user-attachments/assets/bf54b43b-d5de-46a3-8960-d922ef7883a4)
+
+
+update site.yml with - import_playbook: ../static-assignments/common-del.yml instead of common.yml and run it against dev servers
+```
+cd /home/ubuntu/ansible-config-mgt/
+ansible-playbook -i inventory/dev.yml playbooks/site.yaml
+```
+![Screenshot (679)](https://github.com/user-attachments/assets/fc486a24-6d29-4d8b-8349-a011c1bd4824)
+
+wireshark has been successfully deleted in all of the servers.
+![Screenshot (680)](https://github.com/user-attachments/assets/bbeb4d5d-ae84-49d2-a534-38c05a655a73)
