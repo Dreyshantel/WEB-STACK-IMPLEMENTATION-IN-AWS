@@ -126,3 +126,34 @@ ansible-playbook -i inventory/dev.yml playbooks/site.yaml
 
 wireshark has been successfully deleted in all of the servers.
 ![Screenshot (680)](https://github.com/user-attachments/assets/bbeb4d5d-ae84-49d2-a534-38c05a655a73)
+
+
+
+### Step 3 - Configure UAT Webservers with a role "Webserver"
+We have our nice and clean dev environment, so let us put it aside and configure 2 new Web Servers as uat.
+
+1. Launch 2 fresh EC2 instances using RHEL 8 image, we will use them as our uat servers, so give them names accordingly - Web1-UAT and Web2-UAT
+
+2. To create a role, you must create a directory called roles/, relative to the playbook file or in /etv/ansible/ directory
+
+- Use an Ansible utility called ansible-galaxy inside ansible-configmgt/roles directory (you need to create roles directory upfront)
+```
+mkdir roles
+cd roles
+ansible-galaxy init webserver
+```
+- Create the directory/files structure manually since we store all our codes in GitHub, it is recommended to create folders and files there rather than locally on Jenkins-Ansible server
+  ![Screenshot (681)](https://github.com/user-attachments/assets/15e2c531-4520-43f7-8d08-dc8c22a6f619)
+
+After removing unnecessary files and directories, the roles structure should look like this:
+![Screenshot (682)](https://github.com/user-attachments/assets/8ea0ae43-b4f2-4f83-8176-43d9363e2c65)
+
+
+3. Update your inventory "ansible-config-mgt/inventory/uat.yml" file with IP addresses of your 2 UAT web servers
+```
+[uat-webservers]
+<Web1-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user'
+<Web2-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user'
+```
+
+4. In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory "roles_path = /home/ubuntu/ansible-config-mgt/roles, so ansible could know where to find configured roles
