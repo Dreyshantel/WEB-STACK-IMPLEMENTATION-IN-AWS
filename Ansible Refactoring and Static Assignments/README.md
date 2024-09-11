@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/91f7989b-81ae-4c93-9278-e84c080a7dab)# Ansible Refactoring and Static Assignments (Imports and Roles)
+# Ansible Refactoring and Static Assignments (Imports and Roles)
 In this project i will keep working with "ansible-config-mgt" repository and make some improvent of the codes. Now i need to refactor the Ansible code, create assignments, and learn how to use the imports functionalities. Imports allows to effectively re-use previously created playbooks in a new playbook - it allows you to organize your task and re-use them when needed.
 
 ## Code Refactoring
