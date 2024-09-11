@@ -218,3 +218,20 @@ Commit your changes, create a Pull Request and merge them to master branch, make
 
 Now run the playbook against your uat inventory and see what happens
 **Note:** Before running your playbook, ensure you have tunneled into your Jenkins-Ansible server via ssh-agent
+```
+cd /home/ubuntu/ansible-config-mgt
+ansible-playbook -i /inventory/uat.yml playbooks/site.yml
+```
+![Screenshot (686)](https://github.com/user-attachments/assets/7ed3645c-113d-48d6-b469-95db98eecc79)
+
+You should be able to see both of your UAT Web servers configured and you can try to reach them from your browser
+```
+http://13.60.217.155/index.php
+```
+![Screenshot (687)](https://github.com/user-attachments/assets/3a66f57c-196e-4dd0-9583-7ebf200d89fc)
+
+Your Ansible architecture now look like this:
+![image](https://github.com/user-attachments/assets/303d630f-c581-44a9-a848-35f706a4a7e9)
+
+
+
