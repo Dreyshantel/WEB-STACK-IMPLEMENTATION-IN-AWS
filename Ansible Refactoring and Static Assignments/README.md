@@ -31,7 +31,7 @@ chmod - R 0777 /home/ubuntu/ansible-config-artifact
 
 **Note:**  You can configure number of builds to keep in order to save space on the server, for example, you might want to keep only last to or 5 build results. This also applies to the ansible job
 
-6. The main idea od save_artifacts project is to save artifacts into /home/ubuntu/ansible-config-artifact directory. To acheive this, create a build step and choose copy artifacts from other project, specify ansible as source project and /home/ubuntu/ansible-config-artifact as a target directory
+6. The main idea of save_artifacts project is to save artifacts into /home/ubuntu/ansible-config-artifact directory. To acheive this, create a build step and choose copy artifacts from other project, specify ansible as source project and /home/ubuntu/ansible-config-artifact as a target directory
 ![Screenshot (673)](https://github.com/user-attachments/assets/5eba4435-e80d-4991-97ef-4fcea100b3d6)
 
 7. Test your set up by making some change in README.md file inside your ansible-config-mgt repository (right inside main branch). If both Jenkins jobs have completed one after another - you shall see your files inside /home/ubuntu/ansible-config-artifact directory and it will be updated with every commit to your main branch
