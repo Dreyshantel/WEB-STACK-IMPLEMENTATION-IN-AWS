@@ -1,4 +1,4 @@
-# Ansible Refactoring and Static Assignments (Imports and Roles)
+![image](https://github.com/user-attachments/assets/91f7989b-81ae-4c93-9278-e84c080a7dab)# Ansible Refactoring and Static Assignments (Imports and Roles)
 In this project i will keep working with "ansible-config-mgt" repository and make some improvent of the codes. Now i need to refactor the Ansible code, create assignments, and learn how to use the imports functionalities. Imports allows to effectively re-use previously created playbooks in a new playbook - it allows you to organize your task and re-use them when needed.
 
 ## Code Refactoring
@@ -157,3 +157,64 @@ After removing unnecessary files and directories, the roles structure should loo
 ```
 
 4. In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory "roles_path = /home/ubuntu/ansible-config-mgt/roles, so ansible could know where to find configured roles
+
+5. It is time to start adding some logic to the webserver role. Go into tasks directory, and within the main.yml file, start writing configuration tasks to do the following:
+
+- Install and configure Apache (httpd service)
+- Clone Tooling website from GitHub https://github.com/Dreyshantel/tooling.git.
+- Ensure the tooling website code is deployed to /var/www/html on each of 2 UAT Web servers.
+- Make sure httpd service is started
+```
+---
+- name: Setup Apache and deploy a website
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Apache
+      ansible.builtin.yum:
+        name: "httpd"
+        state: present
+
+    - name: Install Git
+      ansible.builtin.yum:
+        name: "git"
+        state: present
+
+    - name: Clone a repository
+      ansible.builtin.git:
+        repo: https://github.com/Dreyshantel/tooling.git
+        dest: /var/www/html
+        force: yes
+
+    - name: Copy HTML content to one level up
+      command: cp -r /var/www/html/html/ /var/www/
+
+    - name: Start Apache service
+      ansible.builtin.service:
+        name: httpd
+        state: started
+```
+![Screenshot (683)](https://github.com/user-attachments/assets/a0f16331-5aae-4d49-89a1-973a8664322d)
+
+
+### Step 4 - Reference 'Webserver' role
+Within the static-assignments folder, create a new assignment for uat-webservers uat-webserverrrs.yml. This is where you will reference the role.
+```
+---
+- hosts: uat-webservers
+  roles:
+    - webserver
+```
+
+The entry point to our ansible configuration is the site.yml file. Therefore, we need to refer your uat-webservers.yml role inside site.yml. So, we should have this in site.yml
+```
+---
+- hosts: uat-webservers
+- import_playbook: ../static-assignments/uat-webservers.yml
+```
+
+### Step 5 - Commit and Test
+Commit your changes, create a Pull Request and merge them to master branch, make sure webhook triggered two consequent Jenkins jobs, they ran successfully and copied all the files to your JenkinsAnsible server into /home/ubuntu/ansible-config-mgt/ directory
+
+Now run the playbook against your uat inventory and see what happens
+**Note:** Before running your playbook, ensure you have tunneled into your Jenkins-Ansible server via ssh-agent
