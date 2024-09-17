@@ -17,11 +17,53 @@ In our https://github.com/Dreyshantel/ansible-config-mgt GitHub repository start
 Create a new folder named dynamic-assignments. Then inside this folder create a new file name env-vars.yml
 ![Screenshot (689)](https://github.com/user-attachments/assets/0c1a7915-eed4-4d69-9fdf-3a0b3cad9db3)
 
+Your GitHub should have the following structure:
+```
+├── dynamic-assignments
+│   └── env-vars.yml
+├── env-vars
+    └── dev.yml
+    └── stage.yml
+    └── uat.yml
+    └── prod.yml
+├── inventory
+    └── dev
+    └── stage
+    └── uat
+    └── prod
+├── playbooks
+    └── site.yml
+└── static-assignments
+    └── common.yml
+    └── webservers.yml
+```
+
 We will instruct site.yml to include this playbook later. For now, let us keep building up the structure
 
 Since we will be using Ansible to configure multiple enviroments, and each of these enviroments will have certain unique attributes, such as servername, ip-address etc...we will need a way to set values to variables per specific enviroments.
 
 For this reason, we will now create a folder to keep each enviroment's variable file. Therefore, create a new folder "env-vars", then for each enviroment, create new YAML files which we will use to set variables. Your layout should now look like this:
+
+```
+├── dynamic-assignments
+│   └── env-vars.yml
+├── env-vars
+    └── dev.yml
+    └── stage.yml
+    └── uat.yml
+    └── prod.yml
+├── inventory
+    └── dev
+    └── stage
+    └── uat
+    └── prod
+├── playbooks
+    └── site.yml
+└── static-assignments
+    └── common.yml
+    └── webservers.yml
+```
+
 
 ![Screenshot (690)](https://github.com/user-attachments/assets/7af2b608-4080-46c4-8363-c9f5ddc61966)
 
@@ -48,11 +90,15 @@ Now paste the following instructions below into your env-vars.yml file
 ![Screenshot (691)](https://github.com/user-attachments/assets/8eeef1c5-c602-41c8-add0-4da39c60b900)
 
 ### 3 things to notice here:
-1. We used include_vars syntax instead of include, this is because Ansible developers decided to separate different features of the module. From Ansible version 2.8, the include module is deprecated and variants of include_* must be used. These are: include_role include_tasks include_vars In the same version, variants of import were also introduces, such as: import_role, import_tasks
+1. We used `include_vars` syntax instead of `include`, this is because Ansible developers decided to separate different features of the module. From Ansible version 2.8, the include module is deprecated and variants of include_* must be used. These are:
+- include_role
+- include_tasks
+-  include_vars
+ In the same version, variants of import were also introduces, such as: `import_role`, `import_tasks`
 
-2. We made use of a special variables {{ playbook_dir }} and {{ inventory_file }}. {{ playbook_dir }} will help Ansible to determine the location of the running playbook, and from there navigate to other path on the filesystem. {{ inventory_file }} on the other hand will dynamically resolve to the name of the inventory file being used, then append .yml so that it picks up the required file within the env-vars folder
+3. We made use of a special variables `{{ playbook_dir }}` and `{{ inventory_file }}`. `{{ playbook_dir }}` will help Ansible to determine the location of the running playbook, and from there navigate to other path on the filesystem. `{{ inventory_file }}` on the other hand will dynamically resolve to the name of the inventory file being used, then append .yml so that it picks up the required file within the env-vars folder
 
-3. We are including the variables using a loop. with_first_found implies that, looping through the list of files, the first one found is used. This is good so that we can always set default values in case an environment specific env file does not exist.
+4. We are including the variables using a loop. with_first_found implies that, looping through the list of files, the first one found is used. This is good so that we can always set default values in case an environment specific env file does not exist.
 
 ### Update site.yml with dynamic assignments
 Update site.yml file to make use of the dynamic assignments. (At this point, we cannot test it yet. We are just setting the stage for what is yet to come. So hang on to your hats)
@@ -62,25 +108,102 @@ site.yml should now look like this:
 ```
 ---
 - hosts: all
-- name: Include dynamic variables
-tasks:
-import_playbook: ../static-assignments/common.yml
-include: ../dynamic-assignments/env-vars.yml
-tags:
-- always
-- hosts: webservers
-- name: Webserver assignment
-import_playbook: ../static-assignments/webservers.yml
+  name: Include dynamic variables
+  become: yes
+  tasks:
+    - include_tasks: ../dynamic-assignments/env-vars.yml
+      tags:
+        - always
+
+- import_playbook: ../static-assignments/common.yml
+
+- import_playbook: ../static-assignments/uat-webservers.yml
+
+- import_playbook: ../static-assignments/loadbalancers.yml
 ```
 
 ![Screenshot (692)](https://github.com/user-attachments/assets/8fd5da35-e353-4284-830a-ec0eb3d1f5e3)
 
 
 ### Community Roles
-Now it is time to create a rolw for MySQL database - it should install the MySQL package, create a database and configure users. But why should we re-invent the wheel? There are tons of roles that have already been developed by other open source engineeers out there. These roles are actually production ready, and dynamic to accomodate most of linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
+Now it is time to create a role for MySQL database - it should install the MySQL package, create a database and configure users. But why should we re-invent the wheel? There are tons of roles that have already been developed by other open source engineeers out there. These roles are actually production ready, and dynamic to accomodate most of linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
 
-### Download MySQL Ansible Role
-We will be using a MySQL role developed by geerlingguy
+
+### Download Mysql Ansible Role
+You can browse available community roles here We will be using a MySQL role developed by geerlingguy.
+
+Hint: To preserve your your GitHub in actual state after you install a new role - make a commit and push to master your `ansible-config-mgt` directory. Of course you must have git installed and configured on Jenkins-Ansible server and, for more convenient work with codes, you can configure Visual Studio Code to work with this directory. In this case, you will no longer need webhook and Jenkins jobs to update your codes on Jenkins-Ansible server, so you can disable it - we will be using Jenkins later for a better purpose.
+
+### Configure vscode to work with the directory (ansible-config-mgt)
+#### Configure SSH for vscode
+Step 1: Install the Remote - SSH Extension
+  - Open VSCode.
+  - Go to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or press Ctrl+Shift+X.
+  - Search for Remote - SSH and click Install on the extension published by Microsoft.
+
+Step 2: Configure SSH
+Before connecting, ensure you can SSH into the host using your terminal:
+  - Open a terminal (PowerShell on Windows, or terminal on Linux/macOS).
+  - Replace username with your remote server username and hostname (or IP address) of the server.
+
+Step 3: Open Folder on Remote Host
+After connecting, you’ll be prompted to choose a folder to open on the remote server.
+Navigate through the directories to select the folder you want to work on and click Open.
+
+![Screenshot (698)](https://github.com/user-attachments/assets/4ae98fc2-77ba-456f-8b16-539841cb2810)
+
+On `Jenkins-Ansible` server make sure that git is installed with git --version, then go to `ansible-config-mgt` directory and run
+```
+git init
+git pull https://github.com/<your-name>/ansible-config-mgt.git
+git remote add origin https://github.com/<your-name>/ansible-config-mgt.git
+git branch roles-feature
+git switch roles-feature
+```
+![Screenshot (700)](https://github.com/user-attachments/assets/398282e0-9cda-479e-a14b-b28eeb256483)
+
+
+### Inside roles directory create your new MySQL role with ansible-galaxy install geerlingguy.mysql
 ```
 ansible-galaxy role install geerlingguy.mysql
 ```
+![Screenshot (701)](https://github.com/user-attachments/assets/5ec756bb-125f-40e1-90fb-5add496bf3de)
+
+**Rename the folder to mysql**
+Read README.md file, and edit roles configuration to use correct credentials for MySQL required for the tooling website.
+
+### Create Database and mysql user (roles/mysql/vars/main.yml)
+```
+mysql_root_password: ""
+mysql_databases:
+  - name: tooling
+    encoding: utf8
+    collation: utf8_general_ci
+mysql_users:
+  - name: webaccess
+    host: "" # Webserver subnet cidr
+    password: Admin123$
+    priv: "tooling.*:ALL"
+```
+![image](https://github.com/user-attachments/assets/a0082629-2502-4db9-8f25-551e2dab26a1)
+
+### Create a new playbook inside static-assignments folder and name it db-servers.yml , update it with mysql roles.
+```
+- hosts: db_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+  roles:
+    - { role: mysql }
+```
+### Now it is time to upload the changes into your GitHub:
+```
+git add .
+git commit -m "Commit new role files into GitHub"
+git push --set-upstream origin roles-feature
+```
+![Screenshot (703)](https://github.com/user-attachments/assets/ef72dc5d-2f61-4790-be66-eaeeb4a27731)
+![Screenshot (704)](https://github.com/user-attachments/assets/0ce3e102-a5fc-4aae-8fce-d9496606b957)
+
+
+
