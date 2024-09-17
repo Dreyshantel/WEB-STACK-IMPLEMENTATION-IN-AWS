@@ -206,4 +206,110 @@ git push --set-upstream origin roles-feature
 ![Screenshot (704)](https://github.com/user-attachments/assets/0ce3e102-a5fc-4aae-8fce-d9496606b957)
 
 
+Now, if you are satisfied with your codes, you can create a Pull Request
+![Screenshot (705)](https://github.com/user-attachments/assets/b7e6cba5-3c65-4c85-95df-11280c030353)
 
+Merge it to `Main` branch on GitHub
+![Screenshot (706)](https://github.com/user-attachments/assets/146d3cc5-b4d8-49df-ac36-184d5666eeb5)
+
+
+### Load Balancers roles
+We want to be able to choose which Load Balancer to use, `Nginx` or `Apache`, so we need to have two roles respectively:
+1. Nginx
+2. Apache
+
+With your experience on Ansible so far you can:
+- Decide if you want to develop your own roles, or find available ones from the community
+- Update both `static-assignment` and `site.yml` files to refer the roles
+
+
+### Using the Community
+![Screenshot (707)](https://github.com/user-attachments/assets/74e9146b-269f-41a7-bf27-436006fda5e7)
+![Screenshot (708)](https://github.com/user-attachments/assets/19430013-8956-4aa2-9eab-774a91fac12f)
+
+```
+ansible-galaxy role install geerlingguy.nginx
+
+ansible-galaxy role install geerlingguy.apache
+```
+![Screenshot (709)](https://github.com/user-attachments/assets/e866a454-68db-4150-b833-864d892713b4)
+
+
+### Rename the installed Nginx and Apache roles
+```
+mv geerlingguy.nginx nginx
+
+mv geerlingguy.apache apache
+```
+![Screenshot (710)](https://github.com/user-attachments/assets/54d6cfc2-cd53-4f37-aed4-d7667eb0ef0e)
+
+
+Your layout should look like this:
+
+![Screenshot (711)](https://github.com/user-attachments/assets/d65700b8-6ae9-45f2-ba00-4e9a5643f6d4)
+
+
+- Update both static-assignment and site.yml files to refer the roles
+ 
+**Important Hints:**
+- Since you cannot use both `Nginx` and `Apache load balancer`, you need to add a condition to enable either one - this is where you can make use of variables.
+- Declare a variable in `defaults/main.yml` file inside the `Nginx` and `Apache` roles. Name each variables `enable_nginx_lb` and    `enable_apache_lb` respectively.
+- Set both values to false like this `enable_nginx_lb:` false and `enable_apache_lb:` false.
+- Declare another variable in both roles load_balancer_is_required and set its value to false as well
+
+
+#### For Nginx
+```
+# roles/nginx/defaults/main.yml
+enable_nginx_lb: false
+load_balancer_is_required: false
+```
+![Screenshot (712)](https://github.com/user-attachments/assets/0056087d-2a76-43b1-9a70-5b358d2a92b3)
+
+
+#### For Apache
+```
+# roles/apache/defaults/main.yml
+enable_apache_lb: false
+load_balancer_is_required: false
+```
+![Screenshot (713)](https://github.com/user-attachments/assets/e3d52502-40b1-4dce-b8ad-5f7546c721b7)
+
+
+### Update assignment
+loadbalancers.yml file
+```
+---
+- hosts: lb
+  become: yes
+  roles:
+    - role: nginx
+      when: enable_nginx_lb | bool and load_balancer_is_required | bool
+    - role: apache
+      when: enable_apache_lb | bool and load_balancer_is_required | bool
+```
+![Screenshot (714)](https://github.com/user-attachments/assets/fa7d90c8-9114-46bb-865e-1dc2cee91b0a0)
+
+
+### Update site.yml files respectively
+```
+---
+- hosts: all
+  name: Include dynamic variables
+  become: yes
+  tasks:
+    - include_tasks: ../dynamic-assignments/env-vars.yml
+      tags:
+        - always
+
+- import_playbook: ../static-assignments/common.yml
+
+- import_playbook: ../static-assignments/uat-webservers.yml
+
+- import_playbook: ../static-assignments/loadbalancers.yml
+
+- import_playbook: ../static-assignments/db-servers.yml
+```
+![Screenshot (715)](https://github.com/user-attachments/assets/bb79188a-ae4c-4051-9eff-1bae4e1318f3)
+
+Now, you can
