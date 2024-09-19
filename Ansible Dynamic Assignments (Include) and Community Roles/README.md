@@ -322,41 +322,13 @@ load_balancer_is_required: true
 ```
 ![Screenshot (717)](https://github.com/user-attachments/assets/919e887f-736c-472c-9676-3fbf83b01fb9)
 
-# Set up for Nginx Load Balancer
-**Update roles/nginx/defaults/main.yml**
-Configure Nginx virtual host
+
+
+
+To test this, you can update inventory for each enviroment and run Ansible against each enviroment
 ```
----
-nginx_vhosts:
-  - listen: "80"
-    server_name: "example.com"
-    root: "/var/www/html"
-    index: "index.php index.html index.htm"
-    locations:
-              - path: "/"
-                proxy_pass: "http://myapp1"
-
-    # Properties that are only added if defined:
-    server_name_redirect: "www.example.com"
-    error_page: ""
-    access_log: ""
-    error_log: ""
-    extra_parameters: ""
-    template: "{{ nginx_vhost_template }}"
-    state: "present"
-
-nginx_upstreams:
-- name: myapp1
-  strategy: "ip_hash"
-  keepalive: 16
-  servers:
-    - "172.31.35.223 weight=5"
-    - "172.31.34.101 weight=5"
-
-nginx_log_format: |-
-  '$remote_addr - $remote_user [$time_local] "$request" '
-  '$status $body_bytes_sent "$http_referer" '
-  '"$http_user_agent" "$http_x_forwarded_for"'
-become: yes
+ansible-playbook -i inventory/uat playbooks/site.yml
 ```
 
+![Screenshot (725)](https://github.com/user-attachments/assets/1de81a07-a660-44b5-8d2d-5a3a4d7fbb38)
+![Screenshot (726)](https://github.com/user-attachments/assets/e98d4cd6-5384-443c-9113-825d7bc17263)
