@@ -169,3 +169,106 @@ pentest-tooling
 This makes us to introduce another Ansible concept called `group_vars`. With group vars, we can declare and set variables for each group of servers created in the inventory file.
 
 For example, If there are variables we need to be common between both `pentest-todo` and `pentest-tooling`, rather than setting these variables in many places, we can simply use the `group_vars` for pentest. Since in the inventory file it has been created as pentest:children Ansible recognizes this and simply applies that variable to both children.
+
+
+### Configuring Ansible for Jenkins Deployment
+1. **Install Jenkins and its dependencies using the terminal**
+   
+Let's Launch an Ec2 instance on Ubuntu OS for Jenkins server
+    - Before installing jenkins and its dependencies, ensure package repository is up to date.
+```
+sudo apt update
+sudo apt upgrade -y
+```
+
+### Install Java
+Jenkins requires Java to run. install Openjdk 11 or 17, and verify that java is successfully downloaded by checking Java version
+```
+sudo apt-get update
+sudo apt install openjdk-11-jdk
+
+#check java version
+java -version
+```
+
+
+### Add Jenkins reppository and import keys
+To install the latest stable version of Jenkins, you’ll need to add the Jenkins repository to your system. First, add the Jenkins repository GPG key:
+
+```
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+```
+
+
+Then, add the Jenkins package repository:
+```
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+```
+
+### Install Jenkins
+```
+sudo apt-get update
+sudo apt-get install jenkins -y
+```
+
+### Enable and start Jenkins
+```
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+sudo systemctl status jenkins
+```
+
+### Allow traffic on jekins default port :8080
+Jenkins by default runs on port 8080. If you’re using ufw (Uncomplicated Firewall), allow Jenkins traffic:
+```
+sudo ufw allow 8080
+sudo ufw allow OpenSSH
+sudo ufw enable
+sudo ufw status
+```
+![Screenshot (738)](https://github.com/user-attachments/assets/5846025c-1e35-4865-bb38-3bb8b5e44482)
+![Screenshot (739)](https://github.com/user-attachments/assets/ba1d8741-1d38-4c69-ae72-5c47a5ba4d39)
+
+
+### Access Jenkins
+Jenkins should now be running and accessible from your web browser. Open your web browser and go to:
+```
+http://your-server-ip:8080
+```
+
+
+### 2. Install and Open Blue Ocean Jenkins Plugin
+Install Blue Ocean which is a modern user interface (UI) for Jenkins, designed to simplify and enhance the experience of building and managing Continuous Integration (CI) and Continuous Delivery (CD) pipelines.
+
+From Jenkins Dashboard click on **Manage Jenkins-> Manage Plugin** and go to `Available tab` to install Blue Ocean
+   ![Screenshot (740)](https://github.com/user-attachments/assets/7cb6bb2f-9be3-4c61-a05a-1def16a01ee4)
+
+
+### Connect Jenkins with GitHub
+connect Jenkins to github by navigating to your github account and create an access token to authenticate connection between Jenkins and GitHub
+![image](https://github.com/user-attachments/assets/ed717dff-c2b6-42b3-93ec-7cb3c58468ea)
+
+
+Created a new pipe line... Here is our newly created pipeline. it takes the name of your GitHub repository.
+![image](https://github.com/user-attachments/assets/d8d3decb-8770-4b89-985c-d5955f8f3164)
+
+
+At this point you may not have a `Jenkinsfile` in the Ansible repository, so Blue Ocean will attempt tpo give you some guidance to create one. But we do not need that. We will rather create one ourselves. So, click on Admininstration to exit the Blue Ocean.
+
+
+**Let us create our `Jenkinsfile`**
+Inside the Ansible project, create a new directory `deploy` and start a new file `jenkinsfile` inside the directory.
+
+
+
+
+
+
+
+
+
+
+
