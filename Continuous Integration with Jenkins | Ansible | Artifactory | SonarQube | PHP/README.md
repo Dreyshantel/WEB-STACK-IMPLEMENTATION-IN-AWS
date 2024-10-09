@@ -1,4 +1,4 @@
-# EXPERIENCE CONTINUOUS INTEGRATION WITH JENKINS | ANSIBLE | ARTIFACTORY | SONARQUBE | PHP
+![image](https://github.com/user-attachments/assets/db878e6a-b61a-42d5-a0fb-7e0f1ab19965)# EXPERIENCE CONTINUOUS INTEGRATION WITH JENKINS | ANSIBLE | ARTIFACTORY | SONARQUBE | PHP
 In this project, you will understand and get hands on experience around the entire concept around CI/CD from applications perspective. To fully gain real expertise around this idea, it is best to see it in action across different programming languages and from the platform perspective too. From the application perspective, we will be focusing on PHP here; there are more projects ahead that are based on Java, Node.js, .Net and Python. By the time you start working on Terraform, Docker and Kubernetes projects, you will get to see the platform perspective of CI/CD in action.
 
 ### 13 DevOps Success Metrics
@@ -261,9 +261,84 @@ At this point you may not have a `Jenkinsfile` in the Ansible repository, so Blu
 
 **Let us create our `Jenkinsfile`**
 Inside the Ansible project, create a new directory `deploy` and start a new file `jenkinsfile` inside the directory.
+![image](https://github.com/user-attachments/assets/89eebe9e-a442-4c85-9f45-3eba7314d975)
+
+Add the code snippet below to start building the `Jenkinsfile` gradually. This pipeline currently has just one stage called `Build` and the only thing we are doing is using the `shell script` module to echo `Building Stage`.
 
 
+```
+pipeline {
+    agent any
 
+
+  stages {
+    stage('Build')  {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+   }
+   }
+}
+```
+
+
+Now go back into the Ansible pipeline in Jenkins, and select configure. Scroll down to `Build Configuration` and specify the location of the `Jenkinsfile` at `deploy/Jenkinsfile`
+
+![Screenshot (745)](https://github.com/user-attachments/assets/af73b40b-c38f-407b-b988-0e48a1c0b77d)
+
+Back to the pipeline again, this time click `Build now`
+
+This will trigger a build and you will be able to see the effect of our basic Jenkinsfile configuration by going through the console output of the build.
+
+To really appreciate and feel the difference of Cloud Blue UI, it is recommended to try triggering the build again from Blue Ocean interface.
+
+1. Click on Open Blue Ocean
+2. Select your project
+3. Click on the play button against the branch
+
+![Screenshot (746)](https://github.com/user-attachments/assets/40e9a5fa-efea-4dca-9fc2-e31aebc1c3d6)
+
+Let us see this in action.
+
+1. Create a new git branch and name ut feature/jenkinspipeline-stages
+2. Currently we only have the `Build` stage. Let us add another stage called `Test`. Paste the code snippet below and push the new changes to GitHub
+
+```
+   pipeline {
+    agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        script {
+          sh 'echo "Testing Stage"'
+        }
+      }
+    }
+    }
+}
+```
+
+Push the new changes to GitHub
+
+To make the new branch to show up in `Jenkins`, we need to tell Jenkins to scan the repository
+1. Click on the "Administration" button
+2. Navigate to the Ansible project and click on "Scan repository now"
+3. Refresh the page and both branches will start building automatically. You can go into Blue Ocean and see both branches there too
+![Screenshot (748)](https://github.com/user-attachments/assets/4aa111e2-8d26-4c28-8269-cb87855ba071)
+
+In Blue Ocean, you can now see how the `Jenkinsfile` has caused a new step in the pipeline launch build for new branch
+![image](https://github.com/user-attachments/assets/bf84603c-a802-4357-bfbd-6add31018e56)
 
 
 
