@@ -341,9 +341,25 @@ In Blue Ocean, you can now see how the `Jenkinsfile` has caused a new step in th
 ![image](https://github.com/user-attachments/assets/bf84603c-a802-4357-bfbd-6add31018e56)
 
 
+4. Create a new branch, add more stages into the Jenkins file to simulate below phases. (Just add an echo command like we have in build and test stages)
+i.   Package
+ii.  Deploy
+iii. Clean up
+![Screenshot (751)](https://github.com/user-attachments/assets/e83521e9-def6-4f09-a59d-e7c211ad8abb)
+
+5. Verify in Blue Ocean that all the stages are working, then merge your feature branch to the main branch
+
+6. Eventually, your main branch should have a successful pipeline like this in blue ocean
+![image](https://github.com/user-attachments/assets/4270ebf2-ab74-4702-8954-731dae3d086f)
 
 
 
+## Run Ansible playbook from Jenkins
+Now that you have a broad overview of a typical Jenkins pipeline. Let's get the actual Ansible deployment to work by:
 
+1. Install Ansible on Jenkins
+2. Install Ansible plugin in Jenkins UI
+3. Creating `Jenkinsfile` from scratch. (Delete all you currently have in there and dtart all over to get Ansible to run successfully)
 
+   
 
