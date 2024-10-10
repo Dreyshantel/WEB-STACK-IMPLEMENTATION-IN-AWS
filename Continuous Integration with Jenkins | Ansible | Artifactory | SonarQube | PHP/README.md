@@ -358,8 +358,133 @@ iii. Clean up
 Now that you have a broad overview of a typical Jenkins pipeline. Let's get the actual Ansible deployment to work by:
 
 1. Install Ansible on Jenkins
-2. Install Ansible plugin in Jenkins UI
-3. Creating `Jenkinsfile` from scratch. (Delete all you currently have in there and dtart all over to get Ansible to run successfully)
+```
+sudo apt update
+sudo apt install ansible -y
+ansible -version
+```
 
-   
+2. Install Ansible plugin in Jenkins UI
+![image](https://github.com/user-attachments/assets/5a975c6b-f915-4edc-bd65-faeb9c70a190)
+
+3. Creating `Jenkinsfile` from scratch. (Delete all you currently have in there and dtart all over to get Ansible to run successfully)
+```
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_CONFIG = "${WORKSPACE}/deploy/ansible.cfg"
+    }
+
+    stages {
+        stage('Initial cleanup') {
+            steps {
+                dir("${WORKSPACE}") {
+                    deleteDir()
+                }
+            }
+        }
+
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Dreyshantel/ansible-config-mgt.git'
+            }
+        }
+
+        stage('Prepare Ansible For Execution') {
+            steps {
+                sh 'echo ${WORKSPACE}'
+                sh 'sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/ansible.cfg'
+            }
+        }
+
+        stage('Test SSH Connections') {
+            steps {
+                script {
+                    def allHosts = [
+                        'ubuntu@172.31.89.253',
+                        'ubuntu@172.31.91.227',
+                        'ec2-user@172.31.81.236',
+                        'ec2-user@172.31.85.118'
+                    ]
+
+                    sshagent(['private-key']) {
+                        allHosts.each { host ->
+                            sh "ssh -o StrictHostKeyChecking=no ${host} exit"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Run Ansible playbook') {
+            steps {
+                sshagent(['private-key']) {
+                    ansiblePlaybook(
+                        become: true,
+                        credentialsId: 'private-key',
+                        disableHostKeyChecking: true,
+                        installation: 'ansible',
+                        inventory: '${WORKSPACE}/inventory/dev.yml',
+                        playbook: '${WORKSPACE}/playbooks/site.yml'
+                    )
+                }
+            }
+        }
+
+        stage('Clean Workspace after build') {
+            steps {
+                cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenUnstable: true, deleteDirs: true)
+            }
+        }
+    }
+}
+```
+
+### Note: Ensure that Ansible runs against the Dev environment successfully.
+Ensure that the git module in Jenkinsfile is checking out SCM to main branch instead of master (GitHub has discontinued the use of Master due to Black Lives Matter. You can read more here)
+
+Jenkins needs to export the ANSIBLE_CONFIG environment variable. You can put the .ansible.cfg file alongside Jenkinsfile in the deploy directory. This way, anyone can easily identify that everything in there relates to deployment. Then, using the Pipeline Syntax tool in Ansible, generate the syntax to create environment variables to set. https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
+
+Possible issues to watch out for when you implement this
+
+1. Remember that ansible.cfg must be exported to environment variable so that Ansible knows where to find Roles. But because you will possibly run Jenkins from different git branches, the location of Ansible roles will change. Therefore, you must handle this dynamically. You can use Linux Stream Editor sed to update the section roles_path each time there is an execution. You may not have this issue if you run only from the main branch.
+
+2. If you push new changes to Git so that Jenkins failure can be fixed. You might observe that your change may sometimes have no effect. Even though your change is the actual fix required. This can be because Jenkins did not download the latest code from GitHub. Ensure that you start the Jenkinsfile with a clean up step to always delete the previous workspace before running a new one. Sometimes you might need to login to the Jenkins Linux server to verify the files in the workspace to confirm that what you are actually expecting is there. Otherwise, you can spend hours trying to figure out why Jenkins is still failing, when you have pushed up possible changes to fix the error.
+
+3. Another possible reason for Jenkins failure sometimes, is because you have indicated in the Jenkinsfile to check out the main git branch, and you are running a pipeline from another branch. So, always verify by logging onto the Jenkins box to check the workspace, and run git branch command to confirm that the branch you are expecting is there.
+
+If everything goes well for you, it means, the Dev environment has an up-to-date configuration.
+
+
+### Install Ansible
+Confirm your Ansible version with the command below:
+```
+ansible --version
+```
+
+### Configure Ansible on Jenkins
+Click on Dashboard > Manage Jenkins > Global Tool Configuration > Add Ansible. Add a name and the path ansible is installed on the jenkins server
+![Screenshot (755)](https://github.com/user-attachments/assets/bafcaee1-1ea9-4b83-93e1-2e589d6138cc)
+
+### To ensure jenkins properly connects to all servers, install another plugin called `ssh agent`
+![image](https://github.com/user-attachments/assets/7a5cf710-814b-4997-a0e7-5768a616653c)
+
+
+### Then go to manage jenkins > credentials > global > add credentials
+Then follow the steps below:
+
+- Kind: SSH Username with private key
+- Scope: Global (Jenkins, nodes, items, all child items, etc)
+- ID: private-key (or any ID you prefer)
+- Username: Leave it blank or set a default value (e.g., defaultuser) # This is because we are using servers of different username i.e - - Ubuntu and ec2-user. This value won’t be used because the actual usernames will be specified in the Ansible inventory file.
+- Private Key: Enter the private key directly
+
+![Screenshot (757)](https://github.com/user-attachments/assets/798786f5-768d-4bb1-a56a-b16a6a5f8e55)
+![image](https://github.com/user-attachments/assets/91b90c34-b6f6-4322-b834-3a093cac3283)
+
+
+### Update inventory/dev.yml by specifying the private IP address of the servers
+
+
 
