@@ -485,6 +485,13 @@ Then follow the steps below:
 
 
 ### Update inventory/dev.yml by specifying the private IP address of the servers
+![image](https://github.com/user-attachments/assets/daadde5c-ff7c-4d3c-af27-d5680a05c300)
+
+### Update the playbook as well
+![Screenshot (761)](https://github.com/user-attachments/assets/b9fbecff-fafd-4eb6-9bb7-268601ba35e0)
+
+
+### Run Ansible against the Dev environment
 
 
 
