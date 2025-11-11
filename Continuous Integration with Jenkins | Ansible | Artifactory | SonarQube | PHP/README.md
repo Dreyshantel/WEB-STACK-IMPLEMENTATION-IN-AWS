@@ -492,6 +492,175 @@ Then follow the steps below:
 
 
 ### Run Ansible against the Dev environment
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/d251e247-fc97-4652-b1a1-701c7aa97f97" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1dcc7ad2-0e09-4163-ab19-8b05f8c9a3f3" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/46074526-f2f8-420b-b54c-8f700401b373" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/3684cfbf-0ace-49b3-b40f-b26856456663" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/87a7c1fa-3116-4752-8dbe-17248ae34eb6" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/3370b035-3c62-4838-8492-dc4cecc30c72" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/0475ae88-064f-423c-ab5b-06956f7afc2c" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/d70e5eae-7155-4c62-917d-a37c90b96645" />
+<img width="959" height="388" alt="image" src="https://github.com/user-attachments/assets/d05bf1c4-2999-4952-9e21-89e08ef0895f" />
+
+
+### Parameterizing jenkinsfile For Ansible Deployment
+To deploy to other enviroment, we will need to use parameters.
+1. Update sit inventory with new servers
+```
+[tooling]
+<SIT-Tooling-Web-Server-Private-IP-Address>
+
+[todo]
+<SIT-Todo-Web-Server-Private-IP-Address>
+
+[nginx]
+<SIT-Nginx-Private-IP-Address>
+
+[db:vars]
+ansible_user=ec2-user
+ansible_python_interpreter=/usr/bin/python
+
+[db]
+<SIT-DB-Server-Private-IP-Address>
+```
+<img width="957" height="233" alt="image" src="https://github.com/user-attachments/assets/84b47285-d60a-4c81-8121-69f1c18f02eb" />
+
+2. Update Jenkinsfile to introduce parametarization. Below is just one parameter. It has a default value in case if no value is specified at execution. It also has a description so that everyone is aware of its purpose
+```
+pipeline {
+    agent any
+
+    parameters {
+      string(name: 'inventory', defaultValue: 'dev',  description: 'This is the inventory file for the environment to deploy configuration')
+    }
+...
+```
+
+<img width="937" height="171" alt="image" src="https://github.com/user-attachments/assets/cb416fd6-df73-4696-9569-93f75c91ac3e" />
+3. In the Ansible execution section, remove the hardcoded inventory/dev and replace with `${inventory}
+<img width="959" height="199" alt="image" src="https://github.com/user-attachments/assets/fb6c575e-c416-4a4a-9092-ff3413f48dd4" />
+
+- Notice the Build Now has changed to Build with Parameters and this enables us to run differenet environment easily. The default value loads up, but we can now specify which environment we want to deploy the configuration to. Simply type sit and hit Run
+<img width="960" height="387" alt="image" src="https://github.com/user-attachments/assets/ed588856-6a8f-4af1-942d-75eee9afb63a" />
+
+- View it from Blue Ocean
+  <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/c11895c7-a695-4ffd-93ed-99c9d12751df" />
+
+4. Add another parameter. This time, introduce tagging in Ansible. You can limit the Ansible execution to a specific role or playbook desired. Therefore, add an Ansible tag to run against webserver only. Test this locally first to get the experience. Once you understand this, update Jenkinsfile and run it from Jenkins.
+<img width="959" height="339" alt="image" src="https://github.com/user-attachments/assets/69bf10b7-1fa1-4a9c-a0b5-ba80c2894fe1" />
+
+- Add another parameter to the jenkinsfile. Name the parameter ansible_tags and the default value webserver
+<img width="906" height="113" alt="image" src="https://github.com/user-attachments/assets/a5a4b3ef-fa76-48f9-bc65-2e91367a395d" />
+
+- Update the Ansible execution section to prompt for tag
+<img width="957" height="166" alt="image" src="https://github.com/user-attachments/assets/dfa1a05b-068e-47bf-9f59-c4ce402961e2" />
+
+- Click on the play button and update the inventory field to sit and the ansible_tags to `webserver`
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/84d7bc0f-6c65-412a-8535-68ab28482e97" />
+
+- Click on `Run` to run the build
+ <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/6229fcfd-728c-4a58-a46a-f269bcb5f302" />
+
+### To avoid hardcoding values in the Jenkinsfile, we can parameterize several more elements. Here are some suggestions:
+1. SCM (Source Control Management) URL and Branch: Parameterize the repository URL and the branch to allow flexibility in changing repositories and branches without modifying the Jenkinsfile.
+2. SSH Hosts: Parameterize the list of SSH hosts. This will enable you to specify different hosts for different environments or scenarios.
+3. Ansible Playbook Path: Parameterize the playbook path to allow different playbooks to be specified.
+4. Credentials ID: Parameterize the credentials ID used for SSH and Ansible to support different credentials for different environments.
+5. Role Path: The roles path in the Ansible configuration can be parameterized as well.
+
+```
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_CONFIG = "${WORKSPACE}/deploy/ansible.cfg"
+    }
+
+    parameters {
+        string(name: 'inventory', defaultValue: 'dev', description: 'Inventory file for environment')
+        string(name: 'branch', defaultValue: 'main', description: 'Branch to checkout')
+        string(name: 'repo_url', defaultValue: 'https://github.com/Dreyshante/ansible-config-mgt.git', description: 'Repository URL')
+        text(name: 'ssh_hosts', defaultValue: 'ec2-user@172.31.2.188\nec2-user@172.31.2.111\nec2-user@172.31.2.109\nubuntu@172.31.2.9', description: 'List of SSH hosts, one per line')
+        string(name: 'playbook_path', defaultValue: '${WORKSPACE}/playbooks/site.yml', description: 'Path to the Ansible playbook')
+        string(name: 'credentials_id', defaultValue: 'private-key', description: 'Credentials ID for SSH and Ansible')
+    }
+
+    stages {
+        stage('Initial cleanup') {
+            steps {
+                dir("${WORKSPACE}") {
+                    deleteDir()
+                }
+            }
+        }
+
+        stage('Checkout SCM') {
+            steps {
+                git branch: "${params.branch}", url: "${params.repo_url}"
+            }
+        }
+
+        stage('Prepare Ansible For Execution') {
+            steps {
+                sh "echo WORKSPACE: ${WORKSPACE}"
+                sh """
+                sed -i '3 a roles_path=${WORKSPACE}/roles' ${WORKSPACE}/deploy/ansible.cfg
+                """
+            }
+        }
+
+        stage('Test SSH Connections') {
+            steps {
+                script {
+                    def allHosts = params.ssh_hosts.split('\n')
+                    sshagent([params.credentials_id]) {
+                        allHosts.each { host ->
+                            sh "ssh -o StrictHostKeyChecking=no ${host} exit || echo 'SSH failed for ${host}'"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Run Ansible playbook') {
+            steps {
+                sshagent([params.credentials_id]) {
+                    ansiblePlaybook(
+                        become: true,
+                        credentialsId: params.credentials_id,
+                        disableHostKeyChecking: true,
+                        installation: 'ansible',
+                        inventory: "${WORKSPACE}/inventory/${params.inventory}",
+                        playbook: params.playbook_path
+                    )
+                }
+            }
+        }
+
+        stage('Clean Workspace after build') {
+            steps {
+                cleanWs(cleanWhenAborted: true, cleanWhenFailure: true,
+                        cleanWhenNotBuilt: true, cleanWhenUnstable: true,
+                        deleteDirs: true)
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/10299b2a-64f3-4add-8254-717c944f44c1" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/26b5e687-9dfd-4b80-b4f0-3fea660b77d1" />
+
+## CI/CD Pipline for TODO Application
+
+
+
+
 
 
 
