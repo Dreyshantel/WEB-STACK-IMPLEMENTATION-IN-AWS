@@ -579,33 +579,45 @@ pipeline {
     parameters {
         string(name: 'inventory', defaultValue: 'dev', description: 'Inventory file for environment')
         string(name: 'branch', defaultValue: 'main', description: 'Branch to checkout')
-        string(name: 'repo_url', defaultValue: 'https://github.com/Dreyshante/ansible-config-mgt.git', description: 'Repository URL')
+        string(name: 'repo_url', defaultValue: 'https://github.com/Dreyshantel/ansible-config-mgt.git', description: 'Repository URL')
         text(name: 'ssh_hosts', defaultValue: 'ec2-user@172.31.2.188\nec2-user@172.31.2.111\nec2-user@172.31.2.109\nubuntu@172.31.2.9', description: 'List of SSH hosts, one per line')
         string(name: 'playbook_path', defaultValue: '${WORKSPACE}/playbooks/site.yml', description: 'Path to the Ansible playbook')
-        string(name: 'credentials_id', defaultValue: 'private-key', description: 'Credentials ID for SSH and Ansible')
+        string(name: 'credentials_id', defaultValue: 'private-key', description: 'Credentials ID for SSH and Ansible')    
     }
 
     stages {
+
         stage('Initial cleanup') {
             steps {
-                dir("${WORKSPACE}") {
-                    deleteDir()
-                }
+                deleteDir()
             }
         }
 
         stage('Checkout SCM') {
             steps {
-                git branch: "${params.branch}", url: "${params.repo_url}"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${params.branch}"]],
+                    userRemoteConfigs: [[
+                        url: "${params.repo_url}",
+                        credentialsId: 'GitHub-credentials'
+                    ]]
+                ])
             }
         }
 
         stage('Prepare Ansible For Execution') {
             steps {
-                sh "echo WORKSPACE: ${WORKSPACE}"
-                sh """
-                sed -i '3 a roles_path=${WORKSPACE}/roles' ${WORKSPACE}/deploy/ansible.cfg
-                """
+                sh '''
+                    echo "WORKSPACE: ${WORKSPACE}"
+                    if [ -f "${WORKSPACE}/deploy/ansible.cfg" ]; then
+                        echo "Found ansible.cfg — updating roles_path..."
+                        sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/ansible.cfg
+                    else
+                        echo "ansible.cfg not found!"
+                        exit 1
+                    fi
+                '''
             }
         }
 
@@ -631,7 +643,7 @@ pipeline {
                         disableHostKeyChecking: true,
                         installation: 'ansible',
                         inventory: "${WORKSPACE}/inventory/${params.inventory}",
-                        playbook: params.playbook_path
+                        playbook: "${WORKSPACE}/playbooks/site.yml"
                     )
                 }
             }
@@ -639,8 +651,10 @@ pipeline {
 
         stage('Clean Workspace after build') {
             steps {
-                cleanWs(cleanWhenAborted: true, cleanWhenFailure: true,
-                        cleanWhenNotBuilt: true, cleanWhenUnstable: true,
+                cleanWs(cleanWhenAborted: true,
+                        cleanWhenFailure: true,
+                        cleanWhenNotBuilt: true,
+                        cleanWhenUnstable: true,
                         deleteDirs: true)
             }
         }
@@ -648,17 +662,85 @@ pipeline {
 
     post {
         always {
+            echo 'Final cleanup after build...'
             cleanWs(deleteDirs: true)
         }
     }
 }
+
 ```
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/10299b2a-64f3-4add-8254-717c944f44c1" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/26b5e687-9dfd-4b80-b4f0-3fea660b77d1" />
 
 ## CI/CD Pipline for TODO Application
+We already have tooling website as a part of deployment through Ansible. Here we will introduce another PHP application to add to the list of software products we are managing in our infrastructure. The good thing with this particular application is that it has unit tests, and it is an ideal application to show an end-to-end CI/CD pipeline for a particular application. Our goal is to deploy the application onto servers directly from Artifactory rather than from git.
+### Todo Project files path
+```
+/path/to/your/laravel/project
+├── app
+│   ├── Console
+│   ├── Exceptions
+│   ├── Http
+│   │   ├── Controllers
+│   │   ├── Middleware
+│   ├── Models
+│   ├── Providers
+├── bootstrap
+│   ├── cache
+├── config
+│   ├── app.php
+│   ├── database.php
+│   └── ...
+├── database
+│   ├── factories
+│   ├── migrations
+│   ├── seeders
+├── public
+│   ├── index.php
+│   ├── css
+│   ├── js
+│   ├── ...
+├── resources
+│   ├── js
+│   ├── lang
+│   ├── views
+│   └── ...
+├── routes
+│   ├── api.php
+│   ├── channels.php
+│   ├── console.php
+│   ├── web.php
+├── storage
+│   ├── app
+│   ├── framework
+│   ├── logs
+├── tests
+│   ├── Feature
+│   ├── Unit
+├── vendor
+├── .env
+├── artisan
+├── composer.json
+├── composer.lock
+├── package.json
+├── phpunit.xml
+└── webpack.mix.js
+```
+Our goal here is to deploy the application onto servers directly from Artifactory rather than from git If you have not updated Ansible with an Artifactory role, simply use this guide to create an Ansible role for Artifactory (ignore the Nginx part). Configure Artifactory on Ubuntu 20.04
 
+## Create an Ansible role for Artifactory
+### Prerequests
+- Ensure port 8082 is opened in artifactory server
+### Install Artifactory role using Ansible galaxy collection
+```
+ansible-galaxy collection install jfrog.platform
+```
+Update Artifactory role in roles/artifactory/tasks/main.yml to install jfrog Artifactory
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/0b3bfb4e-6ba6-4177-9d32-4acfdf4e9804" />
 
+<img width="943" height="77" alt="image" src="https://github.com/user-attachments/assets/31fa8d92-a395-486a-840d-9491f5ab4f10" />
+
+- Update playbook/site.yml
 
 
 
