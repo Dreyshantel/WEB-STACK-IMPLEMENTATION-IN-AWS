@@ -741,8 +741,21 @@ Update Artifactory role in roles/artifactory/tasks/main.yml to install jfrog Art
 <img width="943" height="77" alt="image" src="https://github.com/user-attachments/assets/31fa8d92-a395-486a-840d-9491f5ab4f10" />
 
 - Update playbook/site.yml
+<img width="947" height="423" alt="image" src="https://github.com/user-attachments/assets/b2944bea-7de4-46d5-b79d-d626f8caa918" />
+
+- Update inventory/ci.yml
+<img width="950" height="160" alt="image" src="https://github.com/user-attachments/assets/790b3f7b-ff7b-4f57-83ab-f00abcbb658f" />
+
+### Run the playbook against ci.yml to install jfrog artifactory
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/da63dbd7-5d58-4a6d-b3c6-0db7f62050f8" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/89f4ad8f-9deb-4441-a1cf-6f5bb284a9f8" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/811906c2-6bec-4f59-8f1e-54cf39f9b894" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/5e5d6c26-ede9-4036-81de-ed63169b7c15" />
 
 
+
+
+Access the artifactory GUI on a browser with http://<server public IP address>:8082. Use the default authentication credentials: admin and password to login.
 
 
 
