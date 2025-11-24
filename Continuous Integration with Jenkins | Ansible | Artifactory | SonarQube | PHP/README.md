@@ -752,10 +752,169 @@ Update Artifactory role in roles/artifactory/tasks/main.yml to install jfrog Art
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/811906c2-6bec-4f59-8f1e-54cf39f9b894" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/5e5d6c26-ede9-4036-81de-ed63169b7c15" />
 
-
-
-
 Access the artifactory GUI on a browser with http://<server public IP address>:8082. Use the default authentication credentials: admin and password to login.
 
+# Phase 1 – Prepare Jenkins
+### 1. Fork the repository below into your GitHub account
+```
+https://github.com/StegTechHub/php-todo.git
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/61b5acf2-7eab-44d7-a839-44cb600953e0" />
+
+### 2. On your Jenkins server, install PHP, its dependencies and Composer tool (Feel free to do this manually at first, then update your Ansible accordingly later)
+```
+sudo apt update
+
+# Install dependancies
+sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
+
+# Download the installer to the current directory
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+
+# Install Composer Globally
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+# Remove the Installer
+php -r "unlink('composer-setup.php');"
+
+# Verify Installation version
+php -v
+composer -v
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/cbd05ff8-dd94-4373-8af2-625fa09f347c" />
+
+The php version installed by the composer is 8.3.6 while the php version of the todo application is 7.4. Ensure to remove the current version and install php 7.4 and its dependencies to avoid error.
+
+### 3. Install Jenkins plugins
+- Plot plugin
+- Artifactory plugin
+- We will use plot plugin to display tests reports, and code coverage information.
+- The Artifactory plugin will be used to easily upload code artifacts into an Artifactory server.
+
+### 4. In Jenkins UI configure Artifactory
+- Configure the server ID, URL and Credentials, run Test Connection.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/a09b3a13-a793-4dae-b7e6-23325f05b5be" />
 
 
+# Phase 2 - Integrate Artifactory repository with Jenkins
+1. Create a dummy Jenkinsfile in the repository
+2. Using Blue Ocean, create a multibranch Jenkins pipeline
+
+# 3. On the database server, create database and user
+- In jenkins server Install my sql client
+```
+sudo apt install mysql-client -y
+```
+
+- Create database and user on database server
+```
+Create database homestead;
+CREATE USER 'homestead'@'%' IDENTIFIED BY 'sePret^i';
+GRANT ALL PRIVILEGES ON * . * TO 'homestead'@'%';
+````
+
+- Update mysql role in roles/mysql/vars/main.yml
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/22c76515-0f48-4030-84fe-a70f2ebb286f" />
+
+- Run ansible with jenkins to create the database
+- Verify that database has been created
+
+
+
+<img width="913" height="250" alt="image" src="https://github.com/user-attachments/assets/e28d6875-3622-4179-bf55-10dfbb55b2d1" />
+
+# 4. Update the database connectivity requirements in the file .env.sample
+```
+APP_ENV=local
+APP_DEBUG=true
+LOG_LEVEL=debug
+APP_KEY=SomeRandomString
+APP_URL=http://localhost
+
+DB_HOST=172.31.2.188
+DB_DATABASE=homestead
+DB_USERNAME=homestead
+DB_PASSWORD=sePret^i1
+DB_CONNECTION=mysql
+BD_PORT=3306
+
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_DRIVER=sync
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_DRIVER=smtp
+MAIL_HOST=mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+```
+
+# 5. Update Jenkinsfile with proper pipeline configuration
+```
+pipeline {
+    agent any
+
+  stages {
+
+     stage("Initial cleanup") {
+          steps {
+            dir("${WORKSPACE}") {
+              deleteDir()
+            }
+          }
+        }
+
+    stage('Checkout SCM') {
+      steps {
+            git branch: 'main', url: 'https://github.com/StegTechHub/php-todo.git'
+      }
+    }
+
+    stage('Prepare Dependencies') {
+      steps {
+             sh 'mv .env.sample .env'
+             sh 'composer install'
+             sh 'php artisan migrate'
+             sh 'php artisan db:seed'
+             sh 'php artisan key:generate'
+      }
+    }
+  }
+}
+```
+Notice the Prepare Dependencies section
+
+- The required file by PHP is .env so we are renaming .env.sample to .env
+
+- Composer is used by PHP to install all the dependent libraries used by the application
+
+- php artisan uses the .env file to setup the required database objects - (After successful run of this step, login to the database, run show tables and you will see the tables being created for you)
+
+- Update the Jenkinsfile to include Unit tests step
+    - Update the Jenkinsfile to include Unit tests step
+    - Ensure that all neccesary php extensions are already installed.
+    - Run the pipeline build , you will notice that the database has been populated with tables using a method in laravel known as migration and seeding.
+ 
+
+### Install phpunit
+<img width="932" height="239" alt="image" src="https://github.com/user-attachments/assets/3294c0d5-2ef3-4f39-8398-15ff9a669f0f" />
+
+### Install phploc
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/bed9e07f-cf19-4ff3-b175-7c550fdb5de8" />
+
+- Update Jenkinsfile to include Unit tests
+```
+stage('Execute Unit Tests') {
+      steps {
+             sh './vendor/bin/phpunit'
+      }
+```
+
+- Run the pipieline
+  
+      
