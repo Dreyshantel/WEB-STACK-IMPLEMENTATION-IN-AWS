@@ -1383,6 +1383,228 @@ Now, when SonarQube is up and running, it is time to setup our Quality gate in J
 
 - In Jenkins, install SonarScanner plugin
 
+ <img width="960" height="323" alt="image" src="https://github.com/user-attachments/assets/73175661-c34a-4ced-a460-281838c506a0" />
 
+- Navigate to configure system in Jenkins. Add SonarQube server as shown below: Manage Jenkins > Configure System
+<img width="960" height="425" alt="image" src="https://github.com/user-attachments/assets/0f7f0fd7-d650-481f-8a09-a76dd71c0995" />
+
+
+- Generate authentication token in SonarQube ()
   
+```
+User > My Account > Security > Generate Tokens
+```
+
+
+- Configure Quality Gate Jenkins Webhook in SonarQube – The URL should point to your Jenkins server http://{JENKINS_HOST}/sonarqube-webhook/
+
+### Administration > Configuration > Webhooks > Create
+<img width="689" height="186" alt="image" src="https://github.com/user-attachments/assets/0e879c16-b071-44f0-b88c-fe283e8ed083" />
+
+- Setup SonarQube scanner from Jenkins – Global Tool Configuration
+
+
+## Update Jenkins Pipeline to include SonarQube scanning and Quality Gate
+Below is the snippet for a Quality Gate stage in Jenkinsfile.
+```
+stage('SonarQube Quality Gate') {
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+
+        }
+    }
+```
+ NOTE: The above step will fail because we have not updated sonar-scanner.properties
+
+- Configure sonar-scanner.properties – From the step above, Jenkins will install the scanner tool on the Linux server. You will need to go into the tools directory on the server to configure the properties file in which SonarQube will require to function during pipeline execution.
+  
+```
+cd /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQubeScanner/conf/
+```
+
+Open sonar-scanner.properties file
+```
+sudo vi sonar-scanner.properties
+```
+
+sudo vi sonar-scanner.properties
+```
+sudo vi sonar-scanner.properties
+```
+
+Add configuration related to php-todo project
+```
+sonar.host.url=http://<SonarQube-Server-IP-address>:9000
+sonar.projectKey=php-todo
+#----- Default source code encoding
+sonar.sourceEncoding=UTF-8
+sonar.php.exclusions=**/vendor/**
+sonar.php.coverage.reportPaths=build/logs/clover.xml
+sonar.php.tests.reportPath=build/logs/junit.xml
+```
+
+
+- To further examine the configuration of the scanner tool on the Jenkins server - navigate into the tools directory
+```
+cd /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQubeScanner/bin
+```
+
+- List the content to see the scanner tool sonar-scanner. That is what we are calling in the pipeline script.
+Output of ls -latr
+```
+ubuntu@ip-172-31-16-176:/var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQubeScanner/bin$ ls -latr
+total 24
+-rwxr-xr-x 1 jenkins jenkins 2550 nov  29 12:42 sonar-scanner.bat
+-rwxr-xr-x 1 jenkins jenkins  586 nov  29 12:42 sonar-scanner-debug.bat
+-rwxr-xr-x 1 jenkins jenkins  662 nov  29 12:42 sonar-scanner-debug
+-rwxr-xr-x 1 jenkins jenkins 1823 nov  29 12:42 sonar-scanner
+drwxr-xr-x 2 jenkins jenkins 4096 dec 3 26 18:42 .
+```
+
+
+# End-to-End Pipeline Overview
+- Run your pipeline script and ensure it worked successfully from end to end
+
+But we are not completely done yet!
+
+The quality gate we just included has no effect. Why? Well, because if you go to the SonarQube UI, you will realise that we just pushed a poor-quality code onto the development environment.
+
+There are bugs, and there is 0.0% code coverage. (code coverage is a percentage of unit tests added by developers to test functions and objects in the code)
+
+- If you click on php-todo project for further analysis, you will see that there is 1 day' worth of technical debt, code smells and security issues in the code.
+
+<img width="646" height="268" alt="image" src="https://github.com/user-attachments/assets/2cc2c2c1-2ff3-49e7-ab15-ae93d06d93cf" />
+
+In the development environment, this is acceptable as developers will need to keep iterating over their code towards perfection. But as a DevOps engineer working on the pipeline, we must ensure that the quality gate step causes the pipeline to fail if the conditions for quality are not met.
+
+## Conditionally deploy to higher environments
+In the real world, developers will work on feature branch in a repository (e.g., GitHub or GitLab). There are other branches that will be used differently to control how software releases are done. You will see such branches as:
+
+- Develop
+- Master or Main (The * is a place holder for a version number, Jira Ticket name or some description. It can be - --- ---- something like Release-1.0.0)
+- Feature/*
+- Release/*
+- Hotfix/* etc.
+
+There is a very wide discussion around release strategy, and git branching strategies which in recent years are considered under what is known as GitFlow (Have a read and keep as a bookmark - it is a possible candidate for an interview discussion, so take it seriously!)
+
+Assuming a basic gitflow implementation restricts only the develop branch to deploy code to Integration environment like sit.
+
+Let us update our Jenkinsfile to implement this:
+- First, we will include a When condition to run Quality Gate whenever the running branch is either develop, hotfix, release, main, or master
+```
+when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
+```
+
+- Then we add a timeout step to wait for SonarQube to complete analysis and successfully finish the pipeline only when code quality is acceptable.
+```
+timeout(time: 1, unit: 'MINUTES') {
+        waitForQualityGate abortPipeline: true
+    }
+```
+
+The complete stage will now look like this:
+```
+stage('SonarQube Quality Gate') {
+      when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
+            }
+            timeout(time: 1, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+```
+
+To test, create different branches and push to GitHub. You will realise that only branches other than develop, hotfix, release, main, or master will be able to deploy the code.
+
+Create a new branch feature/sonar-test and commit, push the new code.
+<img width="629" height="318" alt="image" src="https://github.com/user-attachments/assets/75a8d80b-8674-4fcd-aad0-c2cd415df8a5" />
+
+
+Notice that with the current state of the code, it cannot be deployed to Integration environments due to its quality. In the real world, DevOps engineers will push this back to developers to work on the code further, based on SonarQube quality report. Once everything is good with code quality, the pipeline will pass and proceed with sipping the codes further to a higher environment.
+
+
+### Complete the following tasks to finish Project 14
+1. Introduce Jenkins agents/slaves – Add 2 more servers to be used as Jenkins slave. Configure Jenkins to run its pipeline jobs randomly on any available slave nodes. Let's add 2 more servers to be used as Jenkins slave and install java in them.
+```
+# Install  java on slave nodes
+sudo yum install java-11-openjdk-devel -y
+
+# Check the java version
+java --version
+
+# Update packages
+sudo apt update
+
+# Install ansible on slave nodes
+sudo apt install ansible -y
+```
+
+2. Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push. Let's Configure the new nodes on Jenkins Server. Navigate to Dashboard > Manage Jenkins > Nodes, click on New node and enter a Name and click on create.
+<img width="959" height="349" alt="image" src="https://github.com/user-attachments/assets/37950c70-6bdc-46df-96f7-63637e06580c" />
+
+We have created one slave but yet to connect it
+<img width="953" height="302" alt="image" src="https://github.com/user-attachments/assets/b5ece0fa-e2c3-4d25-8b2b-c3ded570af30" />
+
+- Connect slave_1, click on slave_1 and completed this fields then save.
+<img width="938" height="463" alt="image" src="https://github.com/user-attachments/assets/76ac45aa-1c81-49dd-be4a-baeb153879f2" />
+
+
+- Return to Dashboard/Node/slave and click on status
+  Pick any options. Since the node server is on Ubuntu, the first option is picked (UNIX system).
+  <img width="951" height="453" alt="image" src="https://github.com/user-attachments/assets/f9141d60-21a1-430d-8769-bb262b65663e" />
+
+- Ensure to open port 5000 on the slave node server
+- Go to dashboard > manage jenkins > security > Agents, on Jenkins Set the TCP port for inbound agents to fixed and set the port at 5000
+<img width="927" height="198" alt="image" src="https://github.com/user-attachments/assets/a73a0934-8412-4f02-9937-566f4b60830a" />
+
+- Go to slave_1 terminal and run the following: to connect the slave node
+```
+sudo mkdir /opt/build
+sudo chmod 777 /opt/build
+# Download agent.jar to /opt/build. Make sure it has Jenkins IP here
+curl -sO http://34.197.13.18:8080/jnlpJars/agent.jar
+```
+```
+# Download agent.jar to /opt/build. Ensure it has Jenkins IP here
+sudo java -jar agent.jar -url http://34.197.13.18:8080/ -secret 726e0e1b279ed7687ffe86de5b273541f5dea5b48755735defbfad90f5331034 -name "slave_1" -workDir "/opt/build "
+```
+
+- Verify that slave_1 is connected in jenkins
+<img width="657" height="223" alt="image" src="https://github.com/user-attachments/assets/f39254ee-39a6-47b0-a4da-3187db11d0a9" />
+
+- Repeat same steps for slave two
+
+## 2. Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push.
+Go to the php-todo repository settings to configure the webhook
+<img width="955" height="452" alt="image" src="https://github.com/user-attachments/assets/8254f3c0-305e-4fcd-b662-f36c638738cf" />
+
+## 3. Optional – Experience pentesting in pentest environment by configuring Wireshark there and just explore for information sake only.Watch Wireshark Tutorial here
+- Ansible Role for Wireshark:
+
+- https://github.com/ymajik/ansible-role-wireshark (Ubuntu)
+
+- https://github.com/wtanaka/ansible-role-wireshark (RedHat)
+
+## The End of Project 14
+
+
+
+
+
+
+
+
+ 
       
