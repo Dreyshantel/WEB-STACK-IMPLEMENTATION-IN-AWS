@@ -8,5 +8,37 @@ This project demostrates how a secure infrastructure inside AWS VPC (Virtual Pri
 ## Starting Off Your AWS Cloud ProjectStarting Off Your AWS Cloud Project
 There are few requirements that must be met before you begin:
 1. Properly configure your AWS account and Organization Unit [watch how to do this here](https://www.youtube.com/watch?v=9PQYCc_20-Q)
+-Create an AWS master account. (Also Known as Root account)
+Go to AWS console, and navigate to Services > All Services > Management & Governance > AWS Organizations
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/0588b9c7-81f6-4f09-9087-08ea9b2e1ae5" />
+
+  Within the Root account, create a sub-account and name it DevOps. (You will need another email address to complete this)
+- Navigate and click on Add an aws account and name the account (DevOps)
+  <img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/0a402e5a-0da1-4c10-99ea-cfa82d8cfdc6" />
+  <img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/d4141dae-b467-4aec-bd9d-e6705691a270" />
+
+    - Within the root account, create an AWS Organization Unit (OU). Name it `Dev`. (We will launch the Dev resources in there)
+    
+  From the AWS Organization page, Click on root > Action > Create new
+  <img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/df5e9bf5-c7a3-484c-a0f5-6507b271d955" />
+
+ - Move the DevOps account into the Dev OU.
+  select the account to move, then click action > move, then select the OU to move the account to and click move AWS account.
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/6ae5a65b-5aa5-4bfe-b69a-335eeb228852" />
+
+ - Login to the newly created AWS account using the new email address.
+ <img width="957" height="284" alt="image" src="https://github.com/user-attachments/assets/4ec5c166-269f-4348-a390-1f74f83ee781" />
+
+2. Create a free domain name for your fictitious company at freenom domain register. we would use [duckdns](https://www.duckdns.org/)
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/7f4fa91d-d028-4031-a44d-23a1ae0eea54" />
+
+3. Create a hosted zone in AWS, and map it to your free domain from duckdns.
+ - Go to route53 and select create hosted zone
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/4fcfbdd6-8a34-4606-88f7-f23e178e1855" />
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/18c56886-5faf-436f-b013-c5dea1d8f20c" />
+<img width="960" height="517" alt="image" src="https://github.com/user-attachments/assets/e5bd34c0-89c8-4963-8b1f-e4bf8d3f2199" />
+
+
+  
 
 
