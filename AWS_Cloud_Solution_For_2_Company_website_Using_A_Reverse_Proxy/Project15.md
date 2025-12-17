@@ -38,8 +38,28 @@ Go to AWS console, and navigate to Services > All Services > Management & Govern
 
 
 # Set Up a Virtual Private Network (VPC)
+Always make reference to the architectural diagram and ensure that your configuration is aligned with it
+1. **Create a VPC**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/967e19ac-8b12-4ad5-a257-b600db270691" />
 
+Enable DNS hostnames
+Actions > Edit VPC Settings > Enable DNS hostnames
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/53306bd1-28c4-420b-8b6c-11f17b24540c" />
 
+2. **Create subnets as shown in the architecture**. Thus we will create two public subnet in Availability zone A and B, respectively. futhermore, we will create four (4) private subnet in respect to the diagram we are working with. we will create two private subnet each in avaiability A and B.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/69436f3c-e854-42d6-8a46-1bbf78029d63" />
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/46ba9bcc-eef4-4495-9320-9baedef70877" />
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/b8d7f852-f4c2-4e10-9750-b45ca72b0f60" />
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/29ec665d-4e7d-4f4f-a581-b38202ff88eb" />
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/793e081f-a362-4c5a-ae81-e9c182c7f821" />
+
+Enable Auto-assign public IPv4 address in the public subnets. Actions > Edit subnet settings > Enable auto-assign public IPv4
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/6cf6ea66-a59d-4ae8-b4b1-064f5e771195" />
+
+**All subnets**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/bbdc7e52-b925-493c-8e2c-7a644fb16ba6" />
+
+3. Create a route table and associate it with public subnets
 
 
 
