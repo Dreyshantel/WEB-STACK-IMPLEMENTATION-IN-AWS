@@ -59,11 +59,68 @@ Enable Auto-assign public IPv4 address in the public subnets. Actions > Edit sub
 **All subnets**
 <img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/bbdc7e52-b925-493c-8e2c-7a644fb16ba6" />
 
-3. Create a route table and associate it with public subnets
+3. **Create a route table and associate it with public subnets**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/230b82aa-3030-4a83-b611-39b7ddcdda43" />
+Associate it with public subnets. Click on the route table > Subnet Association > Edit Subnet Association.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/83fefcad-5a3f-4e63-8117-3158407e6cbd" />
+
+The public route table and its associated public subnets
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/7726d9de-7bae-44b7-8189-df1273ad7641" />
 
 
+4. **Create a route table and associate it with private subnets**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/06681418-8886-469f-b9be-427d254ecb13" />
+
+Associate it with private subnets. Click on the route table > Subnet Association > Edit Subnet Association.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/32dfc4c6-88c6-49a0-9299-2ec6bc7a01b8" />
+
+The private route table and its associated private subnets
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/b8cb50ff-3864-4d64-853f-68141fc77ecc" />
+
+5. **Create an Internet gateway**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/47a36245-3254-424e-af44-b7c348b923d3" />
+Attach internet gateway to VPC.. Click on Actions > attach VPC,and select your vpc and attach internet gateway to VPC
+<img width="950" height="314" alt="image" src="https://github.com/user-attachments/assets/078ae61b-8cb3-4794-8431-2712d08d2f7d" />
+
+6. **Edit a route in public route table, and associate it with the internet gateway. (This is what allows a public subnet to be accessible from the internet)**
+In the public route table, Click route tab > Edit route > Add route since we are routing traffic to the internet, the destination will be 0.0.0.0/0
+<img width="950" height="315" alt="image" src="https://github.com/user-attachments/assets/9b367071-0385-43cb-8326-4d1b3ffce131" />
+<img width="950" height="428" alt="image" src="https://github.com/user-attachments/assets/81cf4c43-93cf-47ec-a347-41a5782d7d66" />
+
+7. **Create 3 Elastic IPs**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/2d05d9d6-8b73-4f3d-95b6-5a7d548ea117" />
+<img width="949" height="223" alt="image" src="https://github.com/user-attachments/assets/4afa8691-4a5f-4ac4-b12d-9f7bae1b3caf" />
+
+8. **Create a NAT Gateway and assign one of the Elastic IPs(The other two will be used by Bastion hosts)**
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/8dd0679d-1609-4811-86b2-c44944e33e1e" />
+<img width="950" height="362" alt="image" src="https://github.com/user-attachments/assets/775f5c70-2469-43c4-b6d4-0bb973f8994a" />
+
+- Edit a route in private route table, and associate it with the Nat Gateway.
+<img width="950" height="290" alt="image" src="https://github.com/user-attachments/assets/4dc3cce0-d6f1-420b-a823-6a5f7de394da" />
+
+9. Create a Security Group for:
+- **Nginx Servers:** Access to Nginx should only be allowed from a [Application Load balancer (ALB)](https://aws.amazon.com/elasticloadbalancing/application-load-balancer/)
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/d74bf1b9-c4d9-489b-874b-bed94ceab2b6" />
+
+- **Bastion Servers:** Access to the Bastion servers should be allowed only from workstations that need to SSH into the bastion servers. Hence, you can use your workstation public IP address. To get this information, simply go to your terminal and type curl www.canhazip.com
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/3dd3b479-1140-46c0-b997-b2b788b859dc" />
+
+- **Application Load balancer:** ALB will be available from the internet
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/e7ab52c9-20cf-4688-9b68-1bc91a93e2b2" />
+
+- **Internal Application Load Balancer:** This is not an internet facing ALB rather used to distribute internal traffic comming from Nginx (reverse proxy) to our Webservers Auto Scalling Groups in our private subnets. It also helps us to prevent single point of failure.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/aeb135af-1317-4696-9cbc-c1cc762de6f5" />
 
 
-  
+- **Webservers:** Access to webservers should only be allowed from the internal ALB.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/519a1d1e-3ffd-46c7-984d-c1eccaf5b82c" />
+
+- **Data Layer:** Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File System (EFS) must be carefully desinged - only webservers should be able to connect to RDS, while Nginx and Webservers will have access to EFS Mountpoint.
+<img width="950" height="505" alt="image" src="https://github.com/user-attachments/assets/c7f638e4-d3ca-49c8-b252-e19eb5308c3c" />
+
+**All security group**
+<img width="950" height="273" alt="image" src="https://github.com/user-attachments/assets/351e472b-f53a-4ad3-a130-69888ed64157" />
+
+
 
 
