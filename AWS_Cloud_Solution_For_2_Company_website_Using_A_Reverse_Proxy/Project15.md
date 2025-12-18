@@ -121,6 +121,82 @@ In the public route table, Click route tab > Edit route > Add route since we are
 **All security group**
 <img width="950" height="273" alt="image" src="https://github.com/user-attachments/assets/351e472b-f53a-4ad3-a130-69888ed64157" />
 
+# TLS Certificates From Amazon Certificate Manager (ACM)
+We will need TLS certificates to handle secured connectivity to our Application Load Balancers (ALB).
+1. Navigate to AWS ACM
+2. Request a public wildcard certificate for the domain name we registered in Cloudns
+3. Use DNS to validate the domain name
+4. Tag the resource
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/69f4445a-90e5-4fdb-999d-3cd6dbbc2f37" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/9f32af7d-e261-445b-8c80-e4f98975a1be" />
+
+Ensure to create record on Route 53 after creating the certificate. This will generate a CNAME record type in Route 53. We will attach this certificate to all the load balancers.
+
+- Click, Create records in Route 53 > Create records
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1065a878-0d0c-41e0-b983-28c19b4354aa" />
+
+Copy the CNAME name and the CNAME value generated then Go to dnsexit, Click on CNAME > Add new record. Paste the CNAME name and value to validate the record for AWS to issue the certificate (The Certificate status remain pending unitl the record is validated by the Domain provider.)
+<img width="960" height="198" alt="image" src="https://github.com/user-attachments/assets/c0e7339e-84e2-4632-bdcc-e66e4d97a3c2" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/533e19c7-0785-423a-b450-29c8f6481a7f" />
+
+# Setup EFS
+Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully managed elastic Network File System (NFS) for use with AWS Cloud services and on-premises resources. In this project, we will utulize EFS service and mount filesystems on both Nginx and Webservers to store data.
+
+1. Create an EFS filesystem
+2. Create an EFS mount target per AZ in the VPC, associate it with both subnets dedicated for data layer. NB: Any subnet we specify our mount target, the Amazon EFS becomes available in that subnet. As such, we will specify it in private webserver subnets so that all the resources in that subnet will have the ability to mount to the file system.
+3. Associate the Security groups created earlier for data layer.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/592b1b9d-f104-419d-a22c-5e7864504ddf" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/4c4edb38-f049-4fc6-aa46-70b89d1f6afc" />
+<img width="960" height="250" alt="image" src="https://github.com/user-attachments/assets/c6d43165-2752-4437-9c1e-4fe3d09618c3" />
+
+4. Create an EFS access point.
+This will specify where the webservers will mount with, thus creating 2 mount points for Tooling and Wordpress servers each.
+
+Access point for wordpress server
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/576fb71d-1868-423e-b170-ec848174028c" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8db24d2e-667f-47e8-ae6e-9eac023cb75b" />
+Access point for tooling server
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1cad061a-63ab-440a-a441-c20a76ff6675" />
+<img width="960" height="408" alt="image" src="https://github.com/user-attachments/assets/c7548433-744f-451f-a82a-b1684f985439" />
+
+EFS Access points
+<img width="960" height="170" alt="image" src="https://github.com/user-attachments/assets/b0acaaf3-0af7-43c6-b59d-c7b708ff5981" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/83ef2d09-d24b-4749-863a-e2ae78e73e0d" />
+
+# Setup RDS
 
 
 
+
+
+# Proceed with Compute resources
+you will need to set up and configure computer resources inside your VPC. The resources related to compute are:
+
+- EC2 Instances
+- Launch Template
+- Target Groups
+- Autoscaling Groups
+- TLS Certificates
+- Application Load Balancers (ALB)
+
+# Set Up Compute Resources for Nginx, Bastion and Webservers
+NB: To create the Autoscaling Groups, we need Launch Templates and Load Balancers. The Launch Templates requires AMI and Userdata while the Load balancer requires Target Group
+## Provision EC2 Instances for Nginx, Bastion and Webservers
+1. Create EC2 Instances based on CentOS Amazon Machine Image (AMI) per each Availability Zone in the same Region. Use EC2 instance of T2 family (e.g. t2.micro or similar) with security group (All traffic - anywhere).
+
+
+2. Ensure that it has the following software installed:
+- python
+- ntp
+- net-tools
+- vim
+- wget
+- telnet
+- epel-release
+- htop
+
+## For Nginx, Bastion and Webserver.
+**For Nginx**
+```
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+```
