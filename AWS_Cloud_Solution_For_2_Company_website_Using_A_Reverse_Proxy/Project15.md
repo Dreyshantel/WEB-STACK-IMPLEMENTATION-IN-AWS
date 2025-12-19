@@ -155,16 +155,54 @@ This will specify where the webservers will mount with, thus creating 2 mount po
 Access point for wordpress server
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/576fb71d-1868-423e-b170-ec848174028c" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8db24d2e-667f-47e8-ae6e-9eac023cb75b" />
+
+
 Access point for tooling server
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1cad061a-63ab-440a-a441-c20a76ff6675" />
 <img width="960" height="408" alt="image" src="https://github.com/user-attachments/assets/c7548433-744f-451f-a82a-b1684f985439" />
+
 
 EFS Access points
 <img width="960" height="170" alt="image" src="https://github.com/user-attachments/assets/b0acaaf3-0af7-43c6-b59d-c7b708ff5981" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/83ef2d09-d24b-4749-863a-e2ae78e73e0d" />
 
 # Setup RDS
+## Pre-requisite:
+Create a KMS key from Key Management Service (KMS) to be used to encrypt the database instance.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/c326eb29-80a5-49b0-98b0-fa471c061921" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/f24e55c6-16fe-4a34-9afb-36118a31906a" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/43572ec6-1931-4cca-9fdc-849b97f0dfac" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/bbe99cf2-829f-4274-8421-bfcd74b63ae7" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/c8130072-aa1f-491b-a300-b40165eeacb6" />
 
+Amazon Relational Database Service (Amazon RDS) is a managed distributed relational database service by Amazon Web Services. This web service running in the cloud designed to simplify setup, operations, maintenances & scaling of relational databases. Without RDS, Database Administrators (DBA) have more work to do, due to RDS, some DBAs have become jobless. To ensure that your databases are highly available and also have failover support in case one availability zone fails, we will configure a multi-AZ set up of RDS MySQL database instance. In our case, since we are only using 2 AZs, we can only failover to one, but the same concept applies to 3 Availability Zones. We will not consider possible failure of the whole Region, but for this AWS also has a solution - this is a more advanced concept that will be discussed in following projects.
+
+To configure RDS, follow steps below:
+1. Create a subnet group and add 2 private subnets (data layer)
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/b6308e03-466d-49f5-9c21-248aa44299a7" />
+<img width="960" height="186" alt="image" src="https://github.com/user-attachments/assets/6c1031f0-b7f4-4eaa-a1b2-08f4f5be3b02" />
+
+2. Create an RDS instance for mysql 8.*.*
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/9168d3a4-7423-46dc-a6ac-97f357b86bfd" />
+
+3. To satisfy our architectural diagram, you will need to select either Dev/Test or Production Sample Template. But to minimize AWS cost, you can select the Do not create a standby instance option under Availability & durability sample template (The production template will enable Multi-AZ deployment)
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1e1d3dbc-52f1-4b4a-a939-18c71e9f317a" />
+
+4. Configure other settings accordingly (For test purposes, most of the default settings are good to go). In the real world, you will need to size the database appropriately. You will need to get some information about the usage. If it is a highly transactional database that grows at 10GB weekly, you must bear that in mind while configuring the initial storage allocation, storage autoscaling, and maximum storage threshold.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/44221a3e-9293-46ba-864d-045436c1682d" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/802eb36c-0bfb-42c7-91e3-ada4fc0eddac" />
+
+5. Configure VPC na security(ensure the database is not available from the internet)
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/53999c26-5b0e-4bbc-bb26-e3845472b2ed" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/24f4cbe6-ff04-4122-b85c-410c3f2af9bd" />
+
+6. Configure backups and retention
+7. Encrypt the database using the KMS key created earlier
+8. Enable Cloudwatch monitoring and export Error and Slow Query logs (for production, also include Audit)
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/0ea6c2c7-a366-497c-99af-8a95e9d20f1c" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/ea350657-f3ad-4416-9286-5f5df1afdc3e" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1c43d2fa-1125-4e73-8751-74b11a597765" />
+<img width="960" height="230" alt="image" src="https://github.com/user-attachments/assets/a9781367-1a0b-46cd-91c8-3331bc7064bb" />
 
 
 
