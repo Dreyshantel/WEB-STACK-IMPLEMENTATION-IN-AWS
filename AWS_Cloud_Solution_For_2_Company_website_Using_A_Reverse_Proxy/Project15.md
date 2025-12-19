@@ -192,7 +192,7 @@ To configure RDS, follow steps below:
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/44221a3e-9293-46ba-864d-045436c1682d" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/802eb36c-0bfb-42c7-91e3-ada4fc0eddac" />
 
-5. Configure VPC na security(ensure the database is not available from the internet)
+5. Configure VPC and security(ensure the database is not available from the internet)
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/53999c26-5b0e-4bbc-bb26-e3845472b2ed" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/24f4cbe6-ff04-4122-b85c-410c3f2af9bd" />
 
@@ -220,7 +220,7 @@ you will need to set up and configure computer resources inside your VPC. The re
 # Set Up Compute Resources for Nginx, Bastion and Webservers
 NB: To create the Autoscaling Groups, we need Launch Templates and Load Balancers. The Launch Templates requires AMI and Userdata while the Load balancer requires Target Group
 ## Provision EC2 Instances for Nginx, Bastion and Webservers
-1. Create EC2 Instances based on CentOS Amazon Machine Image (AMI) per each Availability Zone in the same Region. Use EC2 instance of T2 family (e.g. t2.micro or similar) with security group (All traffic - anywhere).
+1. Create EC2 Instances based on CentOS Amazon Machine Image (AMI) per each Availability Zone in the same Region. Use EC2 instance of T2 family (e.g. t2.micro or similar) with security group (All traffic - anywhere). We will use our custom VPC with public subnets hosting the Bastion and Nginx servers, while application web servers were deployed in private subnets and accessed through a load balancer
 
 
 2. Ensure that it has the following software installed:
@@ -237,4 +237,9 @@ NB: To create the Autoscaling Groups, we need Launch Templates and Load Balancer
 **For Nginx**
 ```
 sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1d8102db-0e3c-4e4a-97ea-5161fb05631e" />
+
+```
+sudo yum install -y dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm
 ```
