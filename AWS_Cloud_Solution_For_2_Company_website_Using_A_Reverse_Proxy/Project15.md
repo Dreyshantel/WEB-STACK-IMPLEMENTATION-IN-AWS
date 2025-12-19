@@ -261,5 +261,7 @@ sudo setsebool -P httpd_can_network_connect_db=1
 sudo setsebool -P httpd_execmem=1
 sudo setsebool -P httpd_use_nfs 1
 ```
+<img width="928" height="82" alt="image" src="https://github.com/user-attachments/assets/031a6094-ae6f-46e3-a6d4-5576dd809282" />
 
 NB: Repeat the step above for Webservers
+
