@@ -242,4 +242,24 @@ sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 
 ```
 sudo yum install -y dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+
+sudo yum install wget vim python3 telnet htop git mysql net-tools chrony -y
+
+sudo systemctl start chronyd
+sudo systemctl enable chronyd
+sudo systemctl status chronyd
 ```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/e04dcef2-10fe-405f-b204-72181ea75e03" />
+
+NB: Repeat the above steps for Bastion and Webservers
+
+#Nginx and Webserver (Set SELinux policies so that our servers can function properly on all the redhat instance).
+For Nginx
+```
+sudo setsebool -P httpd_can_network_connect=1
+sudo setsebool -P httpd_can_network_connect_db=1
+sudo setsebool -P httpd_execmem=1
+sudo setsebool -P httpd_use_nfs 1
+```
+
+NB: Repeat the step above for Webservers
