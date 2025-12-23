@@ -265,3 +265,12 @@ sudo setsebool -P httpd_use_nfs 1
 
 NB: Repeat the step above for Webservers
 
+# Install Amazon EFS utils for mounting the targets on the Elastic file system (Nginx and Webserver).
+For Nginx
+```
+git clone https://github.com/aws/efs-utils
+
+cd efs-utils
+```
+
+
