@@ -362,3 +362,19 @@ On the EC2 instance page, Go to Actions > Image and templates > Create image
 **For webserver AMI**
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/5a95502d-6b82-4bc8-af9d-032f5da87e4c" />
 
+All AMIs
+<img width="956" height="170" alt="image" src="https://github.com/user-attachments/assets/84f36668-0cb2-436f-ba46-0f6b5a11d2b9" />
+
+# CONFIGURE TARGET GROUPS
+Create Target groups for Nginx, Worpress and Tooling
+
+**For Nginx Target Group**
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/19724820-464b-4c10-a8d6-54397bbdcba2" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/31b7e146-dcfb-4c25-bd9d-7f7877d087fc" />
+
+
+**For Wordpress Target Group**
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8ab56245-f32c-46cf-9141-babb76a9b1d8" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1c015c8e-f6e4-4ba1-9bc7-8af02ec1f72b" />
+
+**For Tooling Target Group**
