@@ -309,3 +309,56 @@ sudo yum install -y  ./build/amazon-efs-utils*rpm
 ```
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1143a9d2-3722-45c9-94c4-0b27fc9e1302" />
 
+**Repeat the steps above for Webservers**
+We are using an ACM (Amazon Certificate Manager) certificate for both our external and internal load balancers. But for some reasons, we might want to add a self-signed certificate:
+
+- Compliance Requirements:
+  - Certain industry regulations and standards (e.g., PCI DSS, HIPAA) require end-to-end encryption, including between internal load balancers and backend servers (within a private network).
+    
+- Defense in Depth:
+  - Adding another layer of security by encrypting traffic between internal load balancers and web servers can provide additional protection.
+ 
+When generating the certificate, In the common name, enter the private IPv4 dns of the instance (for Webserver and Nginx). We use the certificate by specifying the path to the file devcloud.crt and devcloud.key in the nginx configuration.
+
+# Set up self-signed certificate for the nginx instance
+```
+sudo mkdir /etc/ssl/private
+
+sudo chmod 700 /etc/ssl/private
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/devcloud.key -out /etc/ssl/certs/devcloud.crt
+```
+<img width="953" height="268" alt="image" src="https://github.com/user-attachments/assets/2d1bc4ff-10b2-4ac0-86bd-9d3d73056647" />
+
+```
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/cf6e1897-3986-4d2e-906c-a3bed876f43c" />
+
+
+# Set up self-signed certificate for the Apache Webserver instance
+```
+sudo yum install -y mod_ssl
+
+sudo openssl req -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/devcloud.key -x509 -days 365 -out /etc/pki/tls/certs/devcloud.crt
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/f535280c-4609-4559-a6f1-0562976b7e0b" />
+
+
+```
+# Edit the ssl.conf to conform with the key and crt file created.
+sudo vim /etc/httpd/conf.d/ssl.conf
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/ac94fa6d-3447-476b-ba65-a8cadf86702c" />
+
+# Create an AMI out of the EC2 instances
+On the EC2 instance page, Go to Actions > Image and templates > Create image
+**For Bastion AMI**
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/d0731a56-8b8c-4399-accc-14db11448e18" />
+
+**For Nginx AMI**
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/f61ccd32-d4da-4855-84a7-75c26c31f09d" />
+
+**For webserver AMI**
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/5a95502d-6b82-4bc8-af9d-032f5da87e4c" />
+
