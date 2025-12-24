@@ -272,5 +272,40 @@ git clone https://github.com/aws/efs-utils
 
 cd efs-utils
 ```
+<img width="905" height="193" alt="image" src="https://github.com/user-attachments/assets/f62e92b2-940e-460a-a6fa-a23513a17661" />
 
+
+```
+sudo yum install -y make
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/812244b5-7506-4823-b72b-3c3bf12d57f5" />
+
+
+```
+sudo yum install -y rpm-build
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/a690b648-db59-4d32-8e40-274f0dedcbfe" />
+
+
+```
+# openssl-devel is needed by amazon-efs-utils-2.0.4-1.el9.x86_64
+sudo yum install openssl-devel -y
+```
+<img width="957" height="391" alt="image" src="https://github.com/user-attachments/assets/7eb1929f-9639-42ae-8836-bd605fcf0ee6" />
+
+```
+# Cargo command needs to be installed as it is necessary for building the Rust project included in the source.
+sudo yum install cargo -y
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/a4e57107-bcf0-4543-953a-a99bb8b8a200" />
+
+
+```
+sudo make rpm
+```
+
+```
+sudo yum install -y  ./build/amazon-efs-utils*rpm
+```
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1143a9d2-3722-45c9-94c4-0b27fc9e1302" />
 
