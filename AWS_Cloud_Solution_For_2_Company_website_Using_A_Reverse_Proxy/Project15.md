@@ -378,3 +378,43 @@ Create Target groups for Nginx, Worpress and Tooling
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/1c015c8e-f6e4-4ba1-9bc7-8af02ec1f72b" />
 
 **For Tooling Target Group**
+<img width="251" height="108" alt="image" src="https://github.com/user-attachments/assets/7771d5af-ead3-4e05-920b-0f868e742469" />
+
+# Configure Application Load Balancer (ALB)
+**External Application Load Balancer To Route Traffic To NGINX**
+Nginx EC2 Instances will have configurations that accepts incoming traffic only from Load Balancers. No request should go directly to Nginx servers. With this kind of setup, we will benefit from intelligent routing of requests from the ALB to Nginx servers across the 2 Availability Zones. We will also be able to offload SSL/TLS certificates on the ALB instead of Nginx. Therefore, Nginx will be able to perform faster since it will not require extra compute resources to validate certificates for every request.
+
+1. Create an Internet facing ALB
+2. Ensure that it listens on HTTPS protocol (TCP port 443)
+3. Ensure the ALB is created within the appropriate VPC | AZ | Subnets
+4. Choose the Certificate from ACM
+5. Select Security Group
+6. Select Nginx Instances as the target group
+
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/375942c5-e5da-469d-b360-7e7b48a9f332" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/e42ed378-a2df-4dff-8e2d-3130301cddea" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/aa53bd3f-fa65-44bd-ab1c-79b5cfac0e00" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/d52cfafc-ac68-443b-bae7-d2e748964608" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/242f375b-bc28-472d-b1ae-56b7246dca63" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/960d3415-6246-4522-bfd0-df74c4cd6591" />
+
+
+# Application Load Balancer To Route Traffic To Webservers
+Since the webservers are configured for auto-scaling, there is going to be a problem if servers get dynamically scalled out or in. Nginx will not know about the new IP addresses, or the ones that get removed. Hence, Nginx will not know where to direct the traffic.
+
+To solve this problem, we must use a load balancer. But this time, it will be an internal load balancer. Not Internet facing since the webservers are within a private subnet, and we do not want direct access to them.
+1. Create an Internal ALB
+2. Ensure that it listens on HTTPS protocol (TCP port 443)
+3. Ensure the ALB is created within the appropriate VPC | AZ | Subnets
+4. Choose the Certificate from ACM
+5. Select Security Group
+6. Select webserver Instances as the target group
+7. Ensure that health check passes for the target group
+
+**NOTE:** This process must be repeated for both WordPress and Tooling websites.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/9e8e5410-9614-4ae9-b791-b44b1bec7e74" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/93172f1d-2e08-4def-ae95-8ab6c9767775" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8af428f5-e910-4167-921f-7d0a5a44741a" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8029e738-8e4f-407b-a31b-b3d905ee8e54" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/befbefde-c4d1-41e9-aa2a-9efc2b77393b" />
+<img width="820" height="161" alt="image" src="https://github.com/user-attachments/assets/b10fc920-a8d9-4fcf-81ed-ca6a97101e7e" />
