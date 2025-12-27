@@ -418,3 +418,124 @@ To solve this problem, we must use a load balancer. But this time, it will be an
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8029e738-8e4f-407b-a31b-b3d905ee8e54" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/befbefde-c4d1-41e9-aa2a-9efc2b77393b" />
 <img width="820" height="161" alt="image" src="https://github.com/user-attachments/assets/b10fc920-a8d9-4fcf-81ed-ca6a97101e7e" />
+
+
+# PREPARE LAUNCH TEMPLATE FOR NGINX (ONE PER SUBNET)
+1. Make use of the AMI to set up a launch template
+2. Ensure the Instances are launched into a public subnet.
+3. Assign appropriate security group.
+4. Configure Userdata to update yum package repository and install nginx. Ensure to enable auto-assign public IP in the Advance Network Configuration
+
+
+We need to update the reverse.conf file by updating proxy_pass value to the end point of the internal load balancer (DNS name) before using the userdata so as to clone the updated repository.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/17c5c341-1470-465e-bf31-872917a46e5f" />
+
+Repeat the same setting for Bastion, the difference here is the userdata input, AMI and security group.
+
+# Wordpress Userdata
+NB: Both Wordpress and Tooling make use of Webserver AMI.
+
+Update the mount point to the file system, this should be done on access points for tooling and wordpress respectively.
+
+sudo mount -t efs -o tls,accesspoint=fsap-0941d279e4caf2238 fs-01bb3fe22fdd61691:/ /var/www/
+
+
+The RDS end point is also needed. Paste the rds end-point in the wordpress userdata and tooling userdata
+```
+#!/bin/bash
+
+exec > /var/log/tooling.log 2>&1
+
+# Create directory and mount EFS
+mkdir -p /var/www/
+sudo mount -t efs -o tls,accesspoint=fsap-0959937723766fece fs-01db9201ff82862d8:/ /var/www/
+
+
+# Install and start Apache
+sudo yum install -y httpd
+    types_hash_max_size 2048;
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+# Install PHP and necessary extensions
+sudo yum module reset php -y
+sudo yum module enable php:remi-7.4 -y
+sudo yum install -y php php-common php-mbstring php-opcache php-intl php-xml php-gd php-curl php-mysqlnd php-fpm php-json
+sudo systemctl start php-fpm
+sudo systemctl enable php-fpm
+
+# Clone the tooling repository
+git clone https://github.com/Dreyshantel/tooling.git
+
+mkdir -p /var/www/html/
+cp -R tooling/html/* /var/www/html/
+
+# Setup MySQL database
+cd /tooling
+mysql -h devcloud-database.c3w0g802qw96.eu-north-1.rds.amazonaws.com -u adminuser -p toolingdb < tooling-db.sql
+
+
+cd /var/www/html/
+touch healthstatus
+
+# Update database connection in PHP functions file
+sed -i "s/$db = mysqli_connect('mysql.tooling.svc.cluster.local', 'admin', 'admin', 'tooling');/$db = mysqli_connect('devcloud-database.c3w0g802qw96.eu-north-1.rds.amazonaws.com', 'adminuser', '$Devops123!', 'testdb');/g" functions.php
+
+
+# Fix SELinux permissions
+chcon -t httpd_sys_rw_content_t /var/www/html/ -R
+
+# Disable Apache welcome page and restart Apache
+sudo mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf_backup
+sudo systemctl restart httpd
+```
+
+All launch templates created.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/9298ca16-2c60-4faf-940a-20b6b138fbba" />
+
+
+# CONFIGURE AUTOSCALING FOR NGINX
+1. Select the right launch template
+2. Select the VPC
+3. Select both public subnets
+4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
+5. Select the target group you created before
+6. Ensure that you have health checks for both EC2 and ALB
+7. The desired capacity is 2
+8. Minimum capacity is 2
+9. Maximum capacity is 4
+10. Set scale out if CPU utilization reaches 90%
+11. Ensure there is an SNS topic to send scaling notifications
+
+## Create Auto Scaling Group for Bastion
+   <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/7a42fc51-d18b-4837-a9fe-ae0606a63198" />
+
+**Access RDS through Bastion connection to create database for wordpress and tooling.**
+
+Copy the RDS endpoint to be used as host
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/a10341eb-ce5a-47b3-8dd5-e9cfeaf8d10f" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/8af7c300-05dd-4f9b-b69e-942b2f0d804f" />
+<img width="960" height="446" alt="image" src="https://github.com/user-attachments/assets/a13a487a-347c-473b-86dd-caa6002844fd" />
+
+## Create Auto Scaling Group for Nginx and repeat the Nginx Auto Scaling Group steps above for Wordpress and Tooling with their right launch template
+All Auto Scaling Groups
+<img width="960" height="179" alt="image" src="https://github.com/user-attachments/assets/a4d5e1d7-7eb8-4c18-9f98-725825eefcd1" />
+
+
+# Configuring DNS with Route53
+Earlier in this project we registered a free domain with Cloudns and configured a hosted zone in Route53. But that is not all that needs to be done as far as DNS configuration is concerned.
+
+We need to ensure that the main domain for the WordPress website can be reached, and the subdomain for Tooling website can also be reached using a browser.
+
+Create other records such as CNAME, alias and A records.
+
+NOTE: You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is a faster to resolve DNS record, and can coexist with other records on that name. Read here to get to know more about the differences.
+
+- Create an alias record for the root domain and direct its traffic to the ALB DNS name.
+- Create an alias record for tooling.devcloud-dynamic.linkpc.net and direct its traffic to the ALB DNS name.
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/89e8c4df-86f7-43e8-a124-71f65d0bb5cb" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/86fa65cf-6f15-4a31-8633-04a51b4d65e9" />
+<img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/310852ad-820a-4028-8973-5fb4498f2eb2" />
+
+# Ensure that health check passes for the target groups
+Nginx Target Group Health Check
