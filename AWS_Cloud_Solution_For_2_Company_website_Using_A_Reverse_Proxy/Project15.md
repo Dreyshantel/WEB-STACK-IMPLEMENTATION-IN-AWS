@@ -539,4 +539,5 @@ NOTE: You can use either CNAME or alias records to achieve the same thing. But a
 
 ## Let's access the website
 <img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/077aa89f-3cd8-4440-b0c2-c8746157d473" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/b709d29c-d9da-4484-a0dc-461fabf906b1" />
 
