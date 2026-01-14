@@ -537,5 +537,6 @@ NOTE: You can use either CNAME or alias records to achieve the same thing. But a
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/86fa65cf-6f15-4a31-8633-04a51b4d65e9" />
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/310852ad-820a-4028-8973-5fb4498f2eb2" />
 
-# Ensure that health check passes for the target groups
-Nginx Target Group Health Check
+## Let's access the website
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/077aa89f-3cd8-4440-b0c2-c8746157d473" />
+
