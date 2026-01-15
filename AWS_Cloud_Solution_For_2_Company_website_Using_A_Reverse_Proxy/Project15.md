@@ -542,4 +542,6 @@ NOTE: You can use either CNAME or alias records to achieve the same thing. But a
 
 <img width="1901" height="1069" alt="image" src="https://github.com/user-attachments/assets/1c2d8bf4-0068-46bc-882b-95bc8d8b3abf" />
 
+<img width="1889" height="1060" alt="image" src="https://github.com/user-attachments/assets/7e1c892c-ec9c-4f68-8467-1777a973851b" />
+
 
