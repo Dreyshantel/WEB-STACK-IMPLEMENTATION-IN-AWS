@@ -1,4 +1,4 @@
-# Steghub-DevOps-training
+# DevOps hands-on projects
 
 This repository documents project-based learning tasks for the Steghub DevOps Engineering training program.
 
@@ -297,6 +297,6 @@ Description: Implemented a continuous integration (CI) pipeline by integrating J
 Description: Deployed and managed two company websites on AWS using reverse proxy technology to optimize traffic routing and ensure high availability.
 
 
-
+16. Automate Infrastructure with IAC using Terraform - Part 1
 
 # Happy coding and Cloud Engineering!
