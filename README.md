@@ -4,7 +4,7 @@ This repository documents project-based learning tasks for the Steghub DevOps En
 
 Projects:
 
-1. Web Stack Implementation (LAMP)
+1. [Web Stack Implementation (LAMP)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/LAMP%20STACK)
 
 Overview:
 
