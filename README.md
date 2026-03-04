@@ -2,7 +2,7 @@
 
 This repository documents project-based learning tasks for the Steghub DevOps Engineering training program.
 
-Projects:
+## Projects:
 
 1. [Web Stack Implementation (LAMP)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/LAMP%20STACK)
 
@@ -13,8 +13,9 @@ The deployment process includes setting up an EC2 instance, installing and confi
 
 
 
-2. Web Stack Implementation (LEMP)
 
+
+2. [Web Stack Implementation (LEMP)](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/LEMP%20STACK%20)
 Overview:
 
 This project involves deploying a LEMP stack—Linux, Nginx, MySQL, and PHP—on an Ubuntu 24.04 LTS instance hosted on AWS EC2. This stack enables dynamic web application hosting by leveraging Nginx as the web server, MySQL as the database, and PHP for scripting. Nginx is chosen for its efficient handling of concurrent requests, making it suitable for high-traffic environments and reducing latency.
@@ -22,8 +23,9 @@ The deployment process covers setting up the EC2 instance, installing and config
 
 
 
-3. MERN Stack Implementation
 
+
+3. [MERN Stack Implementation](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/MERN%20STACK/MERN)
 Overview:
 
 This project focuses on deploying a MERN stack—MongoDB, Express, React, Node.js—on an AWS EC2 instance with a self-hosted MongoDB database. This stack supports full-stack application hosting with a custom-configured backend database on a production server, ensuring flexibility and control over data management.
@@ -32,7 +34,9 @@ This configuration offers a stable and scalable environment, ideal for productio
 
 
 
-4. MEAN Stack Implementation
+
+
+4. [MEAN Stack Implementation](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/MEAN%20STACK)
 
 Overview:
 
@@ -43,7 +47,8 @@ This setup creates a stable, scalable environment suitable for production MEAN a
 
 
 
-5. Client-Server Architecture with MySQL
+
+5. [Client-Server Architecture with MySQL](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Client-Server%20architecture%20with%20MySQL)
 
 Overview:
 
@@ -53,7 +58,9 @@ This configuration provides a stable, scalable environment for client-server arc
 
 
 
-6. Web Solution with Wordpress
+
+
+6. [Web Solution with Wordpress](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Word%20Solution%20With%20WordPress)
 
 Overview:
 
@@ -72,44 +79,49 @@ This setup provides a scalable, production-ready environment, ideal for hosting 
 
 
 
-7. DevOps Tooling Website Solution
+
+
+7. [DevOps Tooling Website Solution](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/DevOps%20Tooling%20Website%20Solution)
 
 Overview:
 
 The project details the implementation of a DevOps Tooling Website Solution on AWS. It extends previous efforts by introducing scalable multi-server architecture, centralized storage using an NFS server, dedicated MySQL database server, and a web application layer supported by multiple Apache web servers with shared storage and load-balancing potential.
 The setup involves:
 
-1. NFS Server Setup: Three EBS volumes configured with LVM, providing shared storage for web servers to ensure uniform application state across instances.
+1. **NFS Server Setup:** Three EBS volumes configured with LVM, providing shared storage for web servers to ensure uniform application state across instances.
 
 
-2. Database Server Configuration: Dedicated MySQL server with three EBS volumes, also managed by LVM, to provide robust and isolated data storage.
+2. **Database Server Configuration:** Dedicated MySQL server with three EBS volumes, also managed by LVM, to provide robust and isolated data storage.
 
 
-3. Web Server Configuration: Three Apache servers with PHP extensions installed and configured to mount the shared NFS storage, supporting a cloned tooling website application.
+3. **Web Server Configuration:** Three Apache servers with PHP extensions installed and configured to mount the shared NFS storage, supporting a cloned tooling website application.
 
 
-4. Application Deployment: Deploying the tooling website using cloned files from GitHub, with database configurations pointed to the centralized MySQL server.
+4. **Application Deployment:** Deploying the tooling website using cloned files from GitHub, with database configurations pointed to the centralized MySQL server.
 
 
 
 The infrastructure is managed through EC2 instances with properly assigned security groups for each server type, enforcing access control between the web, NFS, and database layers. SELinux configurations were maintained for added security.
 
-Video Demonstration Link
 
-8. Load Balancer Solution with Apache
+
+
+
+
+8. [Load Balancer Solution with Apache](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Load%20Balancer%20Solution%20with%20Apache)
 
 Overview:
 
 This project outlines the setup of an Apache-based load balancer to enhance the DevOps Tooling Website Solution with even traffic distribution across three web servers. By incorporating load balancing, the solution improves scalability and reliability, ensuring high availability and better resource utilization across the infrastructure.
 Key Components:
 
-1. Apache Load Balancer: Configured to manage and distribute incoming traffic to multiple web servers.
+1. **Apache Load Balancer:** Configured to manage and distribute incoming traffic to multiple web servers.
 
 
-2. Web Servers: The application layer containing the DevOps Tooling website, served by three web servers sharing storage via NFS.
+2. **Web Servers:** The application layer containing the DevOps Tooling website, served by three web servers sharing storage via NFS.
 
 
-3. NFS Server and Database Server: NFS for centralized file storage and a MySQL database server to support application data, completing the 3-tier architecture.
+3. **NFS Server and Database Server:** NFS for centralized file storage and a MySQL database server to support application data, completing the 3-tier architecture.
 
 
 
@@ -126,7 +138,9 @@ Testing & Validation: The setup is validated by accessing the application via th
 
 
 
-9. DevOps Tooling Website Deployment with CI/CD - Jenkins
+
+
+9. [DevOps Tooling Website Deployment with CI/CD - Jenkins](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Tooling%20Website%20deployment%20automation%20with%20Continuous%20Integration)
 
 Overview:
 
@@ -153,7 +167,9 @@ Testing and Validation: The solution ensures continuous deployment by triggering
 
 
 
-10. Load Balancer Solution with Nginx and SSL/TLS
+
+
+10. [Load Balancer Solution with Nginx and SSL/TLS](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Load%20Balancer%20Solution%20with%20Nginx%20and%20SSL/TLS)
 
 Overview:
 
@@ -177,7 +193,7 @@ Testing and Validation: The setup is verified by checking HTTPS accessibility, t
 
 
 
-11. Ansible Configuration Management Solution
+11. [Ansible Configuration Management Solution](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Ansible%20configuration%20Management)
 
 Overview:
 
@@ -201,7 +217,9 @@ Testing and Validation:The solution is validated through infrastructure inspecti
 
 
 
-12. Ansible Refactoring & Static Assignments (Imports & Roles) Solution
+
+
+12. [Ansible Refactoring & Static Assignments (Imports & Roles) Solution](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Ansible%20Refactoring%20and%20Static%20Assignments)
 
 Overview:
 
@@ -233,7 +251,7 @@ Smooth CI/CD pipeline integration using Ansible workflows.
 
 
 
-13. Ansible Dynamic Assignments (include) and Community Roles
+13. [Ansible Dynamic Assignments (include) and Community Roles](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Ansible%20Dynamic%20Assignments%20(Include)%20and%20Community%20Roles)
 
 Overview:
 
