@@ -281,3 +281,22 @@ Accurate application of static assignments and role-based tasks.
 Smooth CI/CD pipeline integration using Ansible workflows.
 
 
+
+
+14: [Experience Continuous Integration with Jenkins, Ansible, Artifactory, SonarQube, PHP](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/Continuous%20Integration%20with%20Jenkins%20%7C%20Ansible%20%7C%20Artifactory%20%7C%20SonarQube%20%7C%20PHP)
+
+Overview:
+
+Pipeline Setup with Jenkins, Ansible, Artifactory, SonarQube, and PHP
+Description: Implemented a continuous integration (CI) pipeline by integrating Jenkins, Ansible, Artifactory, SonarQube, and PHP to automate build, test, and deployment processes.
+
+
+
+15. [AWS Cloud Solution for Hosting Two Company Websites with Reverse Proxy](https://github.com/Dreyshantel/WEB-STACK-IMPLEMENTATION-IN-AWS/tree/main/AWS_Cloud_Solution_For_2_Company_website_Using_A_Reverse_Proxy)
+    
+Description: Deployed and managed two company websites on AWS using reverse proxy technology to optimize traffic routing and ensure high availability.
+
+
+
+
+# Happy coding and Cloud Engineering!
