@@ -297,6 +297,7 @@ Description: Implemented a continuous integration (CI) pipeline by integrating J
 Description: Deployed and managed two company websites on AWS using reverse proxy technology to optimize traffic routing and ensure high availability.
 
 
-16. Automate Infrastructure with IAC using Terraform - Part 1
+16. CI/CD Project: Deploy a 3 tier architecture voting Application using ArgoCD and Azure DevOps Pipeline. In progress!
 
-# Happy coding and Cloud Engineering!
+
+
