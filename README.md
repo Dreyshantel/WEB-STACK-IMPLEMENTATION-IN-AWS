@@ -1,6 +1,6 @@
 # DevOps hands-on projects
 
-This repository documents project-based learning tasks for the Steghub DevOps Engineering training program.
+This repository documents DevOps hands on experience using different technology stack.
 
 ## Projects:
 
